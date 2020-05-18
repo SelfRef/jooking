@@ -1,77 +1,69 @@
 <template>
-	<b-container>
-		<b-row>
-			<b-col>a</b-col>
-			<b-col>b</b-col>
-			<b-col>c</b-col>
-		</b-row>
+	<div :class="$style.container">
 		<header>
-			<b-navbar>
+			<b-navbar variant="dark" type="dark">
 				<b-navbar-brand>Jooking</b-navbar-brand>
+				<b-navbar-nav>
+					<b-nav-item to="/">Home</b-nav-item>
+					<b-nav-item to="/hotels">Hotels</b-nav-item>
+				</b-navbar-nav>
+				<b-navbar-nav :class="$style.right">
+					<b-nav-item-dropdown v-if="isLogged">
+						<b-dropdown-item>Settings</b-dropdown-item>
+						<hr />
+						<b-dropdown-item>Logout</b-dropdown-item>
+					</b-nav-item-dropdown>
+					<b-nav-form v-else>
+						<b-button variant="outline-primary" to="/logout">Login</b-button>
+					</b-nav-form>
+				</b-navbar-nav>
 			</b-navbar>
 		</header>
 		<main>
-			<b-container>
-				<b-row>
-					<b-col> </b-col>
-				</b-row>
-				<b-row>
-					<b-col>
-						<nuxt />
-					</b-col>
-				</b-row>
-			</b-container>
+			<nuxt />
 		</main>
 		<footer></footer>
-	</b-container>
+	</div>
 </template>
 
-<style>
-html {
-	font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-		Roboto, 'Helvetica Neue', Arial, sans-serif;
-	font-size: 16px;
-	word-spacing: 1px;
-	-ms-text-size-adjust: 100%;
-	-webkit-text-size-adjust: 100%;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+
+@Component
+export default class Laout extends Vue {
+	get isLogged() {
+		return this.$store.state.auth.isLogged;
+	}
+}
+</script>
+
+<style lang="scss" module>
+.container {
+	width: 100%;
+	max-width: 1000px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	margin: auto;
+
+	header {
+		margin: 50px 0;
+		border-radius: 5px;
+		overflow: hidden;
+
+		.right {
+			flex: 1;
+			justify-content: flex-end;
+		}
+	}
+}
+</style>
+
+<style lang="scss">
+html,
+body {
+	width: 100%;
+	height: 100%;
 	box-sizing: border-box;
-}
-
-*,
-*:before,
-*:after {
-	box-sizing: border-box;
-	margin: 0;
-}
-
-.button--green {
-	display: inline-block;
-	border-radius: 4px;
-	border: 1px solid #3b8070;
-	color: #3b8070;
-	text-decoration: none;
-	padding: 10px 30px;
-}
-
-.button--green:hover {
-	color: #fff;
-	background-color: #3b8070;
-}
-
-.button--grey {
-	display: inline-block;
-	border-radius: 4px;
-	border: 1px solid #35495e;
-	color: #35495e;
-	text-decoration: none;
-	padding: 10px 30px;
-	margin-left: 15px;
-}
-
-.button--grey:hover {
-	color: #fff;
-	background-color: #35495e;
 }
 </style>
