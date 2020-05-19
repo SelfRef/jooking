@@ -1,15 +1,15 @@
 <template>
 	<div :class="$style.container">
 		<header>
-			<b-navbar variant="dark" type="dark">
+			<b-navbar variant="dark" type="dark" :class="$style.navbar">
 				<b-navbar-brand>Jooking</b-navbar-brand>
 				<b-navbar-nav>
 					<b-nav-item to="/">Home</b-nav-item>
 					<b-nav-item to="/hotels">Hotels</b-nav-item>
 				</b-navbar-nav>
 				<b-navbar-nav :class="$style.right">
-					<b-nav-item-dropdown v-if="isLogged">
-						<b-dropdown-item>Settings</b-dropdown-item>
+					<b-nav-item-dropdown v-if="isLogged" :text="userName">
+						<b-dropdown-item to="/user">Account</b-dropdown-item>
 						<hr />
 						<b-dropdown-item>Logout</b-dropdown-item>
 					</b-nav-item-dropdown>
@@ -34,6 +34,10 @@ export default class Laout extends Vue {
 	get isLogged() {
 		return this.$store.state.auth.isLogged;
 	}
+
+	get userName() {
+		return this.$store.state.auth.name;
+	}
 }
 </script>
 
@@ -46,11 +50,9 @@ export default class Laout extends Vue {
 	flex-direction: column;
 	margin: auto;
 
-	header {
+	.navbar {
 		margin: 50px 0;
-		border-radius: 5px;
-		overflow: hidden;
-
+		border-radius: 0.25rem;
 		.right {
 			flex: 1;
 			justify-content: flex-end;
