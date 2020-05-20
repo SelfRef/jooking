@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using JookingApi.Models;
 
 namespace JookingApi
 {
@@ -25,7 +28,13 @@ namespace JookingApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddControllers();
+			services.AddDbContext<HotelsContext>(opt => {
+				opt.UseInMemoryDatabase("Hotels");
+			});
+			services.AddControllers().AddJsonOptions(options => {
+				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+			});
+			services.AddOpenApiDocument();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,7 +43,9 @@ namespace JookingApi
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();
+				app.UseSwaggerUi3();
 			}
+			app.UseOpenApi();
 
 			app.UseHttpsRedirection();
 
