@@ -18,3 +18,30 @@ public enum Role {
 	Moderator,
 	Admin
 }
+
+public class UserResponse {
+	public static UserResponse FromUser(User user) {
+		return new UserResponse {
+			Id = user.Id,
+			Name = user.Name,
+			Surname = user.Surname,
+			Email = user.Email,
+			Registered = user.Registered,
+			Role = user.Role
+		};
+	}
+	public int Id { get; set; }
+	public string Name { get; set; }
+	public string Surname { get; set; }
+	public string Email { get; set; }
+	public DateTime Registered { get; set; }
+	public Role Role { get; set; }
+}
+
+public class UserRequest {
+	public int Id { get; set; }
+	public string Name { get; set; }
+	public string Surname { get; set; }
+	public string Email { get; set; }
+	public Role Role { get; set; }
+}
