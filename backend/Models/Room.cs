@@ -7,11 +7,12 @@ public class Room {
 	public int BedCount { get; set; }
 	public int BedSize { get; set; }
 	public Hotel Hotel { get; set; }
+	public int HotelId { get; set; }
 	public ICollection<Reservation> Reservations { get; set; }
 }
 
 public enum RoomStandard {
 	Onion,
 	Comfort,
-	Luxyry
+	Luxury
 }

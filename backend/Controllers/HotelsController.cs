@@ -22,14 +22,14 @@ namespace JookingApi.Controllers
 
         // GET: api/Hotels
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
+        public async Task<ActionResult<IEnumerable<HotelResponse>>> GetHotels()
         {
-            return await _context.Hotels.ToListAsync();
+            return await _context.Hotels.Select(hotel => HotelResponse.FromHotel(hotel)).ToListAsync();
         }
 
         // GET: api/Hotels/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotel(int id)
+        public async Task<ActionResult<HotelResponse>> GetHotel(int id)
         {
             var hotel = await _context.Hotels.FindAsync(id);
 
@@ -38,21 +38,27 @@ namespace JookingApi.Controllers
                 return NotFound();
             }
 
-            return hotel;
+            return HotelResponse.FromHotel(hotel);
         }
 
         // PUT: api/Hotels/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHotel(int id, Hotel hotel)
+        public async Task<IActionResult> PutHotel(int id, HotelRequest hotel)
         {
             if (id != hotel.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(hotel).State = EntityState.Modified;
+            var hotelModel = await _context.Hotels.FindAsync(id);
+            hotelModel.Name = hotel.Name;
+            hotelModel.Description = hotel.Description;
+            hotelModel.Email = hotel.Email;
+            hotelModel.Phone = hotel.Phone;
+            hotelModel.UserId = hotel.UserId;
+            _context.Entry(hotelModel).State = EntityState.Modified;
 
             try
             {
@@ -77,17 +83,25 @@ namespace JookingApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
+        public async Task<ActionResult<HotelResponse>> PostHotel(HotelRequest hotel)
         {
-            _context.Hotels.Add(hotel);
+            var hotelModel = new Hotel() {
+                Id = 0,
+                Name = hotel.Name,
+                Description = hotel.Description,
+                Email = hotel.Email,
+                Phone = hotel.Phone,
+                UserId = hotel.UserId
+            };
+            _context.Hotels.Add(hotelModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
+            return CreatedAtAction("GetHotel", new { id = hotelModel.Id }, HotelResponse.FromHotel(hotelModel));
         }
 
         // DELETE: api/Hotels/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Hotel>> DeleteHotel(int id)
+        public async Task<ActionResult<HotelResponse>> DeleteHotel(int id)
         {
             var hotel = await _context.Hotels.FindAsync(id);
             if (hotel == null)
@@ -98,7 +112,7 @@ namespace JookingApi.Controllers
             _context.Hotels.Remove(hotel);
             await _context.SaveChangesAsync();
 
-            return hotel;
+            return HotelResponse.FromHotel(hotel);
         }
 
         private bool HotelExists(int id)

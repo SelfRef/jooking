@@ -3,21 +3,21 @@
 		<b-container>
 			<b-row>
 				<b-col>
-					<b-card :class="$style.users">
+					<b-card>
 						<template v-slot:header>
-							<h4 class="float-left">Users</h4>
+							<h4 class="float-left">Hotels</h4>
 							<b-button-group class="float-right">
 								<b-button @click="refresh">
 									Refresh
 								</b-button>
 								<b-button variant="success" @click="editModal">
-									Add new user
+									Add new hotel
 								</b-button>
 							</b-button-group>
 						</template>
-						<b-table :items="users" :fields="fields">
-							<template v-slot:cell(registered)="data">
-								{{ localDate(data.item.registered) }}
+						<b-table :items="hotels" :fields="fields">
+							<template v-slot:cell(userId)="data">
+								{{ userNameById(data.item.userId) }}
 							</template>
 							<template v-slot:cell(actions)="data">
 								<b-button-group>
@@ -37,33 +37,37 @@
 		<b-modal id="edit" title="Edit user" @ok="edit">
 			<b-form>
 				<b-form-group label="Name">
-					<b-form-input v-model="user.name" type="text" required></b-form-input>
-				</b-form-group>
-				<b-form-group label="Surname">
 					<b-form-input
-						v-model="user.surname"
+						v-model="hotel.name"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Description">
+					<b-form-input
+						v-model="hotel.description"
 						type="text"
 						required
 					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Email">
 					<b-form-input
-						v-model="user.email"
+						v-model="hotel.email"
 						type="email"
 						required
 					></b-form-input>
 				</b-form-group>
-				<b-form-group label="Email">
+				<b-form-group label="Phone">
 					<b-form-input
-						v-model="user.email"
+						v-model="hotel.phone"
 						type="phone"
 						required
 					></b-form-input>
 				</b-form-group>
-				<b-form-group label="Role">
+				<b-form-group label="Owner">
 					<b-form-select
-						v-model="user.role"
-						:options="roles"
+						v-model="hotel.userId"
+						:options="userOptions"
 						required
 					></b-form-select>
 				</b-form-group>
@@ -72,15 +76,15 @@
 				>Check all fields before submitting</b-alert
 			>
 		</b-modal>
-		<b-modal id="remove" title="Remove user" @ok="remove">
-			Do you want to remove this user: {{ userToRemove }}?
+		<b-modal id="remove" title="Remove hotel" @ok="remove">
+			Do you want to remove this hotel: {{ hotelToRemove }}?
 		</b-modal>
 	</div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { IUser } from '@/lib/Api';
+import { IHotel, IUser } from '@/lib/Api';
 
 @Component
 export default class Users extends Vue {
@@ -90,7 +94,7 @@ export default class Users extends Vue {
 			sortable: true,
 		},
 		{
-			key: 'surname',
+			key: 'description',
 			sortable: true,
 		},
 		{
@@ -102,11 +106,8 @@ export default class Users extends Vue {
 			sortable: false,
 		},
 		{
-			key: 'registered',
-			sortable: true,
-		},
-		{
-			key: 'role',
+			key: 'userId',
+			label: 'User',
 			sortable: true,
 		},
 		{
@@ -115,38 +116,62 @@ export default class Users extends Vue {
 		},
 	];
 
-	roles: string[] = ['Guest', 'Moderator', 'Admin'];
-	user: IUser = this.emptyUser;
-	userId: number;
-	userToRemove: string = '';
+	hotel: IHotel = this.emptyHotel;
+	hotelId: number;
+	hotelToRemove: string = '';
 	showInvalid: boolean = false;
 
 	async mounted() {
+		await this.$store.dispatch('hotels/pullHotels');
 		await this.$store.dispatch('users/pullUsers');
 	}
 
 	async refresh() {
-		await this.$store.dispatch('users/pullUsers', true);
+		await this.$store.dispatch('hotels/pullHotels', true);
 	}
 
 	get users(): IUser[] {
 		return this.$store.state.users.users;
 	}
 
-	get emptyUser() {
-		return (this.user = {
+	get hotels(): IHotel[] {
+		return this.$store.state.hotels.hotels;
+	}
+
+	get emptyHotel() {
+		return (this.hotel = {
 			id: 0,
 			name: '',
-			surname: '',
+			description: '',
 			email: '',
 			phone: '',
-			role: '',
+			userId: 0,
 		});
 	}
 
+	get userOptions() {
+		if (!this.users) return [];
+		return this.users.map(u => {
+			return {
+				value: u.id,
+				text: this.userNameById(u.id),
+			};
+		});
+	}
+
+	hotelById(id: number) {
+		const hotel = this.hotels.find(h => h.id === id);
+		return { ...hotel } || this.emptyHotel;
+	}
+
 	userById(id: number) {
-		const user = this.users.find(u => u.id === id);
-		return { ...user } || this.emptyUser;
+		const user = this.users?.find(u => u.id === id) ?? {};
+		return { ...user };
+	}
+
+	userNameById(id: number) {
+		const user = this.userById(id);
+		return `${user.name} ${user.surname}`;
 	}
 
 	localDate(date: Date) {
@@ -154,29 +179,30 @@ export default class Users extends Vue {
 	}
 
 	editModal(id: number) {
-		this.userId = id;
-		this.user = this.userById(id);
+		this.hotelId = id;
+		this.hotel = this.hotelById(id);
 		this.$bvModal.show('edit');
 	}
 
 	removeModal(id: number) {
-		this.userId = id;
-		const user = this.userById(id);
-		this.userToRemove = `${user.name} ${user.surname}`;
+		this.hotelId = id;
+		const hotel = this.hotelById(id);
+		this.hotelToRemove = `${hotel.name}`;
 		this.$bvModal.show('remove');
 	}
 
 	async edit($event) {
 		if (
-			this.user.name &&
-			this.user.surname &&
-			this.user.email &&
-			this.user.role
+			this.hotel.name &&
+			this.hotel.description &&
+			this.hotel.email &&
+			this.hotel.phone &&
+			this.hotel.userId
 		) {
-			if (this.user.id) {
-				await this.$store.dispatch('users/edit', this.user);
+			if (this.hotel.id) {
+				await this.$store.dispatch('hotels/edit', this.hotel);
 			} else {
-				await this.$store.dispatch('users/create', this.user);
+				await this.$store.dispatch('hotels/create', this.hotel);
 			}
 			this.showInvalid = false;
 		} else {
@@ -186,7 +212,7 @@ export default class Users extends Vue {
 	}
 
 	async remove() {
-		await this.$store.dispatch('users/remove', this.userId);
+		await this.$store.dispatch('hotels/remove', this.hotelId);
 	}
 }
 </script>

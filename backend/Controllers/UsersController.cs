@@ -56,6 +56,7 @@ namespace JookingApi.Controllers
 			userModel.Name = user.Name;
 			userModel.Surname = user.Surname;
 			userModel.Email = user.Email;
+			userModel.Phone = user.Phone;
 			userModel.Role = user.Role;
 
 			_context.Entry(userModel).State = EntityState.Modified;
@@ -90,6 +91,7 @@ namespace JookingApi.Controllers
 				Name = user.Name,
 				Surname = user.Surname,
 				Email = user.Email,
+				Phone = user.Phone,
 				Role = user.Role,
 				Registered = DateTime.Now
 			};

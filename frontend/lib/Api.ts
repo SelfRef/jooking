@@ -19,7 +19,7 @@ export class HotelsClient {
         this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
     }
 
-    getHotels(): Promise<Hotel[]> {
+    getHotels(): Promise<HotelResponse[]> {
         let url_ = this.baseUrl + "/api/Hotels";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -37,7 +37,7 @@ export class HotelsClient {
         });
     }
 
-    protected processGetHotels(response: AxiosResponse): Promise<Hotel[]> {
+    protected processGetHotels(response: AxiosResponse): Promise<HotelResponse[]> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -54,17 +54,17 @@ export class HotelsClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(Hotel.fromJS(item));
+                    result200!.push(HotelResponse.fromJS(item));
             }
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<Hotel[]>(<any>null);
+        return Promise.resolve<HotelResponse[]>(<any>null);
     }
 
-    postHotel(hotel: Hotel): Promise<Hotel> {
+    postHotel(hotel: HotelRequest): Promise<HotelResponse> {
         let url_ = this.baseUrl + "/api/Hotels";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -86,7 +86,7 @@ export class HotelsClient {
         });
     }
 
-    protected processPostHotel(response: AxiosResponse): Promise<Hotel> {
+    protected processPostHotel(response: AxiosResponse): Promise<HotelResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -100,16 +100,16 @@ export class HotelsClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = Hotel.fromJS(resultData200);
+            result200 = HotelResponse.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<Hotel>(<any>null);
+        return Promise.resolve<HotelResponse>(<any>null);
     }
 
-    getHotel(id: number): Promise<Hotel> {
+    getHotel(id: number): Promise<HotelResponse> {
         let url_ = this.baseUrl + "/api/Hotels/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -130,7 +130,7 @@ export class HotelsClient {
         });
     }
 
-    protected processGetHotel(response: AxiosResponse): Promise<Hotel> {
+    protected processGetHotel(response: AxiosResponse): Promise<HotelResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -144,16 +144,16 @@ export class HotelsClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = Hotel.fromJS(resultData200);
+            result200 = HotelResponse.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<Hotel>(<any>null);
+        return Promise.resolve<HotelResponse>(<any>null);
     }
 
-    putHotel(id: number, hotel: Hotel): Promise<FileResponse> {
+    putHotel(id: number, hotel: HotelRequest): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/Hotels/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -201,7 +201,7 @@ export class HotelsClient {
         return Promise.resolve<FileResponse>(<any>null);
     }
 
-    deleteHotel(id: number): Promise<Hotel> {
+    deleteHotel(id: number): Promise<HotelResponse> {
         let url_ = this.baseUrl + "/api/Hotels/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -222,7 +222,7 @@ export class HotelsClient {
         });
     }
 
-    protected processDeleteHotel(response: AxiosResponse): Promise<Hotel> {
+    protected processDeleteHotel(response: AxiosResponse): Promise<HotelResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -236,13 +236,13 @@ export class HotelsClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = Hotel.fromJS(resultData200);
+            result200 = HotelResponse.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<Hotel>(<any>null);
+        return Promise.resolve<HotelResponse>(<any>null);
     }
 }
 
@@ -730,7 +730,7 @@ export class UsersClient {
         this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
     }
 
-    getUsers(): Promise<User[]> {
+    getUsers(): Promise<UserResponse[]> {
         let url_ = this.baseUrl + "/api/Users";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -748,7 +748,7 @@ export class UsersClient {
         });
     }
 
-    protected processGetUsers(response: AxiosResponse): Promise<User[]> {
+    protected processGetUsers(response: AxiosResponse): Promise<UserResponse[]> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -765,17 +765,17 @@ export class UsersClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(User.fromJS(item));
+                    result200!.push(UserResponse.fromJS(item));
             }
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<User[]>(<any>null);
+        return Promise.resolve<UserResponse[]>(<any>null);
     }
 
-    postUser(user: User): Promise<User> {
+    postUser(user: UserRequest): Promise<UserResponse> {
         let url_ = this.baseUrl + "/api/Users";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -797,7 +797,7 @@ export class UsersClient {
         });
     }
 
-    protected processPostUser(response: AxiosResponse): Promise<User> {
+    protected processPostUser(response: AxiosResponse): Promise<UserResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -811,16 +811,16 @@ export class UsersClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = User.fromJS(resultData200);
+            result200 = UserResponse.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<User>(<any>null);
+        return Promise.resolve<UserResponse>(<any>null);
     }
 
-    getUser(id: number): Promise<User> {
+    getUser(id: number): Promise<UserResponse> {
         let url_ = this.baseUrl + "/api/Users/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -841,7 +841,7 @@ export class UsersClient {
         });
     }
 
-    protected processGetUser(response: AxiosResponse): Promise<User> {
+    protected processGetUser(response: AxiosResponse): Promise<UserResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -855,16 +855,16 @@ export class UsersClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = User.fromJS(resultData200);
+            result200 = UserResponse.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<User>(<any>null);
+        return Promise.resolve<UserResponse>(<any>null);
     }
 
-    putUser(id: number, user: User): Promise<FileResponse> {
+    putUser(id: number, user: UserRequest): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/Users/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -957,11 +957,264 @@ export class UsersClient {
     }
 }
 
+export class HotelResponse implements IHotelResponse {
+    id?: number;
+    name?: string | null;
+    description?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    userId?: number;
+
+    constructor(data?: IHotelResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): HotelResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new HotelResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        return data; 
+    }
+}
+
+export interface IHotelResponse {
+    id?: number;
+    name?: string | null;
+    description?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    userId?: number;
+}
+
+export class HotelRequest implements IHotelRequest {
+    id?: number;
+    name?: string | null;
+    description?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    userId?: number;
+
+    constructor(data?: IHotelRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): HotelRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new HotelRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        return data; 
+    }
+}
+
+export interface IHotelRequest {
+    id?: number;
+    name?: string | null;
+    description?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    userId?: number;
+}
+
+export class Reservation implements IReservation {
+    id?: number;
+    startDate?: Date;
+    endDate?: Date;
+    room?: Room | null;
+    roomId?: number;
+    user?: User | null;
+    userId?: number;
+
+    constructor(data?: IReservation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>null;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>null;
+            this.room = _data["room"] ? Room.fromJS(_data["room"]) : <any>null;
+            this.roomId = _data["roomId"] !== undefined ? _data["roomId"] : <any>null;
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): Reservation {
+        data = typeof data === 'object' ? data : {};
+        let result = new Reservation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>null;
+        data["room"] = this.room ? this.room.toJSON() : <any>null;
+        data["roomId"] = this.roomId !== undefined ? this.roomId : <any>null;
+        data["user"] = this.user ? this.user.toJSON() : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        return data; 
+    }
+}
+
+export interface IReservation {
+    id?: number;
+    startDate?: Date;
+    endDate?: Date;
+    room?: Room | null;
+    roomId?: number;
+    user?: User | null;
+    userId?: number;
+}
+
+export class Room implements IRoom {
+    id?: number;
+    number?: number;
+    standard?: RoomStandard;
+    bedCount?: number;
+    bedSize?: number;
+    hotel?: Hotel | null;
+    hotelId?: number;
+    reservations?: Reservation[] | null;
+
+    constructor(data?: IRoom) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.number = _data["number"] !== undefined ? _data["number"] : <any>null;
+            this.standard = _data["standard"] !== undefined ? _data["standard"] : <any>null;
+            this.bedCount = _data["bedCount"] !== undefined ? _data["bedCount"] : <any>null;
+            this.bedSize = _data["bedSize"] !== undefined ? _data["bedSize"] : <any>null;
+            this.hotel = _data["hotel"] ? Hotel.fromJS(_data["hotel"]) : <any>null;
+            this.hotelId = _data["hotelId"] !== undefined ? _data["hotelId"] : <any>null;
+            if (Array.isArray(_data["reservations"])) {
+                this.reservations = [] as any;
+                for (let item of _data["reservations"])
+                    this.reservations!.push(Reservation.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): Room {
+        data = typeof data === 'object' ? data : {};
+        let result = new Room();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["number"] = this.number !== undefined ? this.number : <any>null;
+        data["standard"] = this.standard !== undefined ? this.standard : <any>null;
+        data["bedCount"] = this.bedCount !== undefined ? this.bedCount : <any>null;
+        data["bedSize"] = this.bedSize !== undefined ? this.bedSize : <any>null;
+        data["hotel"] = this.hotel ? this.hotel.toJSON() : <any>null;
+        data["hotelId"] = this.hotelId !== undefined ? this.hotelId : <any>null;
+        if (Array.isArray(this.reservations)) {
+            data["reservations"] = [];
+            for (let item of this.reservations)
+                data["reservations"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IRoom {
+    id?: number;
+    number?: number;
+    standard?: RoomStandard;
+    bedCount?: number;
+    bedSize?: number;
+    hotel?: Hotel | null;
+    hotelId?: number;
+    reservations?: Reservation[] | null;
+}
+
+export enum RoomStandard {
+    Onion = "Onion",
+    Comfort = "Comfort",
+    Luxury = "Luxury",
+}
+
 export class Hotel implements IHotel {
     id?: number;
     name?: string | null;
     description?: string | null;
+    email?: string | null;
+    phone?: string | null;
     user?: User | null;
+    userId?: number;
     rooms?: Room[] | null;
 
     constructor(data?: IHotel) {
@@ -978,7 +1231,10 @@ export class Hotel implements IHotel {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
             this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
             this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
             if (Array.isArray(_data["rooms"])) {
                 this.rooms = [] as any;
                 for (let item of _data["rooms"])
@@ -999,7 +1255,10 @@ export class Hotel implements IHotel {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
         data["user"] = this.user ? this.user.toJSON() : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
         if (Array.isArray(this.rooms)) {
             data["rooms"] = [];
             for (let item of this.rooms)
@@ -1013,7 +1272,10 @@ export interface IHotel {
     id?: number;
     name?: string | null;
     description?: string | null;
+    email?: string | null;
+    phone?: string | null;
     user?: User | null;
+    userId?: number;
     rooms?: Room[] | null;
 }
 
@@ -1022,6 +1284,7 @@ export class User implements IUser {
     name?: string | null;
     surname?: string | null;
     email?: string | null;
+    phone?: string | null;
     password?: string | null;
     registered?: Date;
     role?: Role;
@@ -1043,6 +1306,7 @@ export class User implements IUser {
             this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
             this.surname = _data["surname"] !== undefined ? _data["surname"] : <any>null;
             this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
             this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
             this.registered = _data["registered"] ? new Date(_data["registered"].toString()) : <any>null;
             this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
@@ -1072,6 +1336,7 @@ export class User implements IUser {
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["surname"] = this.surname !== undefined ? this.surname : <any>null;
         data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
         data["password"] = this.password !== undefined ? this.password : <any>null;
         data["registered"] = this.registered ? this.registered.toISOString() : <any>null;
         data["role"] = this.role !== undefined ? this.role : <any>null;
@@ -1094,6 +1359,7 @@ export interface IUser {
     name?: string | null;
     surname?: string | null;
     email?: string | null;
+    phone?: string | null;
     password?: string | null;
     registered?: Date;
     role?: Role;
@@ -1107,14 +1373,16 @@ export enum Role {
     Admin = "Admin",
 }
 
-export class Reservation implements IReservation {
+export class UserResponse implements IUserResponse {
     id?: number;
-    startDate?: Date;
-    endDate?: Date;
-    room?: Room | null;
-    user?: User | null;
+    name?: string | null;
+    surname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    registered?: Date;
+    role?: Role;
 
-    constructor(data?: IReservation) {
+    constructor(data?: IUserResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1126,16 +1394,18 @@ export class Reservation implements IReservation {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>null;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>null;
-            this.room = _data["room"] ? Room.fromJS(_data["room"]) : <any>null;
-            this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.surname = _data["surname"] !== undefined ? _data["surname"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.registered = _data["registered"] ? new Date(_data["registered"].toString()) : <any>null;
+            this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
         }
     }
 
-    static fromJS(data: any): Reservation {
+    static fromJS(data: any): UserResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new Reservation();
+        let result = new UserResponse();
         result.init(data);
         return result;
     }
@@ -1143,32 +1413,35 @@ export class Reservation implements IReservation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>null;
-        data["room"] = this.room ? this.room.toJSON() : <any>null;
-        data["user"] = this.user ? this.user.toJSON() : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["surname"] = this.surname !== undefined ? this.surname : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["registered"] = this.registered ? this.registered.toISOString() : <any>null;
+        data["role"] = this.role !== undefined ? this.role : <any>null;
         return data; 
     }
 }
 
-export interface IReservation {
+export interface IUserResponse {
     id?: number;
-    startDate?: Date;
-    endDate?: Date;
-    room?: Room | null;
-    user?: User | null;
+    name?: string | null;
+    surname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    registered?: Date;
+    role?: Role;
 }
 
-export class Room implements IRoom {
+export class UserRequest implements IUserRequest {
     id?: number;
-    number?: number;
-    standard?: RoomStandard;
-    bedCount?: number;
-    bedSize?: number;
-    hotel?: Hotel | null;
-    reservations?: Reservation[] | null;
+    name?: string | null;
+    surname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    role?: Role;
 
-    constructor(data?: IRoom) {
+    constructor(data?: IUserRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1180,22 +1453,17 @@ export class Room implements IRoom {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-            this.number = _data["number"] !== undefined ? _data["number"] : <any>null;
-            this.standard = _data["standard"] !== undefined ? _data["standard"] : <any>null;
-            this.bedCount = _data["bedCount"] !== undefined ? _data["bedCount"] : <any>null;
-            this.bedSize = _data["bedSize"] !== undefined ? _data["bedSize"] : <any>null;
-            this.hotel = _data["hotel"] ? Hotel.fromJS(_data["hotel"]) : <any>null;
-            if (Array.isArray(_data["reservations"])) {
-                this.reservations = [] as any;
-                for (let item of _data["reservations"])
-                    this.reservations!.push(Reservation.fromJS(item));
-            }
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.surname = _data["surname"] !== undefined ? _data["surname"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
         }
     }
 
-    static fromJS(data: any): Room {
+    static fromJS(data: any): UserRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new Room();
+        let result = new UserRequest();
         result.init(data);
         return result;
     }
@@ -1203,34 +1471,22 @@ export class Room implements IRoom {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["number"] = this.number !== undefined ? this.number : <any>null;
-        data["standard"] = this.standard !== undefined ? this.standard : <any>null;
-        data["bedCount"] = this.bedCount !== undefined ? this.bedCount : <any>null;
-        data["bedSize"] = this.bedSize !== undefined ? this.bedSize : <any>null;
-        data["hotel"] = this.hotel ? this.hotel.toJSON() : <any>null;
-        if (Array.isArray(this.reservations)) {
-            data["reservations"] = [];
-            for (let item of this.reservations)
-                data["reservations"].push(item.toJSON());
-        }
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["surname"] = this.surname !== undefined ? this.surname : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["role"] = this.role !== undefined ? this.role : <any>null;
         return data; 
     }
 }
 
-export interface IRoom {
+export interface IUserRequest {
     id?: number;
-    number?: number;
-    standard?: RoomStandard;
-    bedCount?: number;
-    bedSize?: number;
-    hotel?: Hotel | null;
-    reservations?: Reservation[] | null;
-}
-
-export enum RoomStandard {
-    Onion = "Onion",
-    Comfort = "Comfort",
-    Luxyry = "Luxyry",
+    name?: string | null;
+    surname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    role?: Role;
 }
 
 export interface FileResponse {
