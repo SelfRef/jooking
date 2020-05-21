@@ -4,16 +4,9 @@ type ActionContext = {
 	commit: Commit;
 	state: IState;
 };
-type UserData = {
-	name: string | null;
-	surname: string | null;
-	email: string | null;
-	registered: string | null;
-	role: string | null;
-};
 
 interface IState {
-	users: UserData[] | null;
+	users: IUser[] | null;
 }
 
 export const state = (): IState => ({
@@ -22,16 +15,7 @@ export const state = (): IState => ({
 
 export const mutations = {
 	setUsers(state: IState, users: IUser[]) {
-		const userData: UserData[] = users.map(u => {
-			return {
-				name: u.name ?? null,
-				surname: u.surname ?? null,
-				email: u.email ?? null,
-				registered: u.registered?.toLocaleString('pl') ?? null,
-				role: u.role ?? null,
-			};
-		});
-		state.users = userData;
+		state.users = users;
 	},
 };
 
