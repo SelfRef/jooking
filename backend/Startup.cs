@@ -35,6 +35,13 @@ namespace JookingApi
 				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 			});
 			services.AddOpenApiDocument(document => document.DocumentName = "v1");
+			services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+			{
+				builder
+					.AllowAnyOrigin()
+					.AllowAnyMethod()
+					.AllowAnyHeader();
+			}));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +52,7 @@ namespace JookingApi
 				app.UseDeveloperExceptionPage();
 				app.UseSwaggerUi3();
 			}
+			app.UseCors("MyPolicy");
 			app.UseOpenApi();
 			app.UseHttpsRedirection();
 			app.UseRouting();

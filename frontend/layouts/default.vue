@@ -6,10 +6,11 @@
 				<b-navbar-nav>
 					<b-nav-item to="/">Home</b-nav-item>
 					<b-nav-item to="/hotels">Hotels</b-nav-item>
+					<b-nav-item to="/users">Users</b-nav-item>
 				</b-navbar-nav>
 				<b-navbar-nav :class="$style.right">
 					<b-nav-item-dropdown v-if="isLogged" :text="userName">
-						<b-dropdown-item to="/user">Account</b-dropdown-item>
+						<b-dropdown-item to="/account">Account</b-dropdown-item>
 						<hr />
 						<b-dropdown-item>Logout</b-dropdown-item>
 					</b-nav-item-dropdown>

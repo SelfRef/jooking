@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using JookingApi.Models;
 
 namespace JookingApi
 {
@@ -13,6 +14,9 @@ namespace JookingApi
 	{
 		public static void Main(string[] args)
 		{
+			using (var context = new HotelsContext()) {
+				context.Database.EnsureCreated();
+			}
 			CreateHostBuilder(args).Build().Run();
 		}
 

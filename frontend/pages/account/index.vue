@@ -45,7 +45,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class User extends Vue {
+export default class Account extends Vue {
 	get authData() {
 		return this.$store.state.auth;
 	}
