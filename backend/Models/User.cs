@@ -7,14 +7,7 @@ public class User {
 	public string Email { get; set; }
 	public DateTime Registered { get; set; }
 	public Role Role { get; set; }
-}
-
-public class Guest : User {
 	public Reservation[] Reservations { get; set; }
-
-}
-
-public class Moderator : User {
 	public Hotel[] Hotels { get; set; }
 }
 

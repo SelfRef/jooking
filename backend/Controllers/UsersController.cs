@@ -11,48 +11,48 @@ namespace JookingApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HotelsController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly HotelsContext _context;
 
-        public HotelsController(HotelsContext context)
+        public UsersController(HotelsContext context)
         {
             _context = context;
         }
 
-        // GET: api/Hotels
+        // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
-            return await _context.Hotels.ToListAsync();
+            return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Hotels/5
+        // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hotel>> GetHotel(int id)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
-            var hotel = await _context.Hotels.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
 
-            if (hotel == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return hotel;
+            return user;
         }
 
-        // PUT: api/Hotels/5
+        // PUT: api/Users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHotel(int id, Hotel hotel)
+        public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != hotel.Id)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(hotel).State = EntityState.Modified;
+            _context.Entry(user).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace JookingApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!HotelExists(id))
+                if (!UserExists(id))
                 {
                     return NotFound();
                 }
@@ -73,37 +73,37 @@ namespace JookingApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Hotels
+        // POST: api/Users
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Hotel>> PostHotel(Hotel hotel)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            _context.Hotels.Add(hotel);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetHotel", new { id = hotel.Id }, hotel);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/Hotels/5
+        // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Hotel>> DeleteHotel(int id)
+        public async Task<ActionResult<User>> DeleteUser(int id)
         {
-            var hotel = await _context.Hotels.FindAsync(id);
-            if (hotel == null)
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
             {
                 return NotFound();
             }
 
-            _context.Hotels.Remove(hotel);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return hotel;
+            return user;
         }
 
-        private bool HotelExists(int id)
+        private bool UserExists(int id)
         {
-            return _context.Hotels.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

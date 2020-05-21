@@ -30,7 +30,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 
 @Component
-export default class Laout extends Vue {
+export default class Layout extends Vue {
 	get isLogged() {
 		return this.$store.state.auth.isLogged;
 	}
