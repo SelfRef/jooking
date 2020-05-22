@@ -370,6 +370,7 @@ export default class Users extends Vue {
 				await this.$store.dispatch('rooms/createRoom', this.room);
 			}
 			this.showRoomInvalid = false;
+			if (this.selectedHotel) this.selectHotel(this.selectedHotel.id);
 		} else {
 			$event.preventDefault();
 			this.showRoomInvalid = true;
@@ -378,11 +379,11 @@ export default class Users extends Vue {
 
 	async removeRoom() {
 		await this.$store.dispatch('hotels/removeRoom', this.roomId);
+		if (this.selectedHotel) this.selectHotel(this.selectedHotel.id);
 	}
 
 	selectRow(rows) {
 		if (rows[0]) this.selectHotel(rows[0].id);
-		else this.selectedHotel = null;
 	}
 
 	async selectHotel(id) {
