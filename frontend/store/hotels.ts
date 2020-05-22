@@ -1,5 +1,12 @@
 import { Commit, Dispatch } from 'vuex';
-import { HotelsClient, IHotel, Hotel } from '@/lib/Api';
+import {
+	HotelsClient,
+	IHotel,
+	Hotel,
+	RoomsClient,
+	IRoom,
+	Room,
+} from '@/lib/Api';
 type ActionContext = {
 	commit: Commit;
 	state: IState;
@@ -55,6 +62,39 @@ export const actions = {
 		const client = new HotelsClient();
 		try {
 			await client.deleteHotel(id);
+		} catch (e) {
+			console.log(e);
+		}
+		await dispatch('pullHotels', true);
+	},
+
+	async pullRoom(_context: ActionContext, id: string) {
+		const client = new RoomsClient();
+		return await client.getRoom(Number(id));
+	},
+	async createRoom({ dispatch }: ActionContext, room: IRoom) {
+		const client = new RoomsClient();
+		room.id = 0;
+		try {
+			await client.postRoom(new Room(room));
+		} catch (e) {
+			console.log(e);
+		}
+		await dispatch('pullHotels', true);
+	},
+	async editRoom({ dispatch }: ActionContext, room: IRoom) {
+		const client = new RoomsClient();
+		try {
+			await client.putRoom(room.id || 0, new Room(room));
+		} catch (e) {
+			console.log(e);
+		}
+		await dispatch('pullHotels', true);
+	},
+	async removeRoom({ dispatch }: ActionContext, id: number) {
+		const client = new RoomsClient();
+		try {
+			await client.deleteRoom(id);
 		} catch (e) {
 			console.log(e);
 		}

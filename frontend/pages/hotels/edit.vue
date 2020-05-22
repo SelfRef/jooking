@@ -56,10 +56,14 @@
 						<b-table :items="selectedHotel.rooms" :fields="roomFields">
 							<template v-slot:cell(actions)="data">
 								<b-button-group>
-									<b-button variant="primary" @click="editModal(data.item.id)"
+									<b-button
+										variant="primary"
+										@click="editRoomModal(data.item.id)"
 										><b-icon icon="pencil"
 									/></b-button>
-									<b-button variant="danger" @click="removeModal(data.item.id)"
+									<b-button
+										variant="danger"
+										@click="removeRoomModal(data.item.id)"
 										><b-icon icon="trash"
 									/></b-button>
 								</b-button-group>
@@ -69,7 +73,7 @@
 				</b-col>
 			</b-row>
 		</b-container>
-		<b-modal id="edit" title="Edit user" @ok="edit">
+		<b-modal id="edit" title="Edit hotel" @ok="edit">
 			<b-form>
 				<b-form-group label="Name">
 					<b-form-input
@@ -114,12 +118,55 @@
 		<b-modal id="remove" title="Remove hotel" @ok="remove">
 			Do you want to remove this hotel: {{ hotelToRemove }}?
 		</b-modal>
+		<b-modal
+			v-if="selectedHotel"
+			id="editRoom"
+			title="Edit room"
+			@ok="editRoom"
+		>
+			<b-form>
+				<b-form-group label="Number">
+					<b-form-input
+						v-model="selectedHotel.number"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Standard">
+					<b-form-select
+						v-model="selectedHotel.standard"
+						:options="roomStandards"
+						required
+					></b-form-select>
+				</b-form-group>
+				<b-form-group label="Bed Count">
+					<b-form-input
+						v-model="selectedHotel.bedCount"
+						type="number"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Bed Size">
+					<b-form-input
+						v-model="selectedHotel.bedSize"
+						type="number"
+						required
+					></b-form-input>
+				</b-form-group>
+			</b-form>
+			<b-alert variant="danger" :show="showInvalid"
+				>Check all fields before submitting</b-alert
+			>
+		</b-modal>
+		<b-modal id="removeRoom" title="Remove hotel" @ok="removeRoom">
+			Do you want to remove this hotel: {{ hotelToRemove }}?
+		</b-modal>
 	</div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { IHotel, IUser } from '@/lib/Api';
+import { IHotel, IUser, RoomStandard, IRoom } from '@/lib/Api';
 
 @Component
 export default class Users extends Vue {
@@ -175,10 +222,14 @@ export default class Users extends Vue {
 	];
 
 	hotel: IHotel = this.emptyHotel;
-	hotelId: number;
+	hotelId!: number;
 	hotelToRemove: string = '';
+	room: IRoom = this.emptyRoom;
+	roomId!: number;
+	roomToRemove: string = '';
 	showInvalid: boolean = false;
-	selectedHotel = null;
+	showRoomInvalid: boolean = false;
+	selectedHotel: IHotel | null = null;
 
 	async mounted() {
 		await this.$store.dispatch('hotels/pullHotels');
@@ -208,6 +259,16 @@ export default class Users extends Vue {
 		});
 	}
 
+	get emptyRoom() {
+		return (this.room = {
+			id: 0,
+			number: undefined,
+			standard: undefined,
+			bedCount: undefined,
+			bedSize: undefined,
+		});
+	}
+
 	get userOptions() {
 		if (!this.users) return [];
 		return this.users.map(u => {
@@ -218,9 +279,18 @@ export default class Users extends Vue {
 		});
 	}
 
+	get roomStandards() {
+		return RoomStandard;
+	}
+
 	hotelById(id: number) {
 		const hotel = this.hotels.find(h => h.id === id);
 		return { ...hotel } || this.emptyHotel;
+	}
+
+	roomById(id: number) {
+		const room = this.selectedHotel?.rooms?.find(r => r.id === id) ?? null;
+		return { ...room } || this.emptyRoom;
 	}
 
 	userById(id: number) {
@@ -250,6 +320,19 @@ export default class Users extends Vue {
 		this.$bvModal.show('remove');
 	}
 
+	editRoomModal(id: number) {
+		this.roomId = id;
+		this.room = this.roomById(id);
+		this.$bvModal.show('editRoom');
+	}
+
+	removeRoomModal(id: number) {
+		this.roomId = id;
+		const room = this.roomById(id);
+		this.roomToRemove = `${room.standard} ${room.bedCount}x${room.bedSize} (${room.number})`;
+		this.$bvModal.show('removeRoom');
+	}
+
 	async edit($event) {
 		if (
 			this.hotel.name &&
@@ -272,6 +355,29 @@ export default class Users extends Vue {
 
 	async remove() {
 		await this.$store.dispatch('hotels/remove', this.hotelId);
+	}
+
+	async editRoom($event) {
+		if (
+			this.room.number &&
+			this.room.standard &&
+			this.room.bedCount &&
+			this.room.bedSize
+		) {
+			if (this.room.id) {
+				await this.$store.dispatch('hotels/editRoom', this.room);
+			} else {
+				await this.$store.dispatch('rooms/createRoom', this.room);
+			}
+			this.showInvalid = false;
+		} else {
+			$event.preventDefault();
+			this.showInvalid = true;
+		}
+	}
+
+	async removeRoom() {
+		await this.$store.dispatch('hotels/removeRoom', this.roomId);
 	}
 
 	selectRow(rows) {
