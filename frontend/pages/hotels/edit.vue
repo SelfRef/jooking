@@ -232,8 +232,15 @@ export default class Users extends Vue {
 	selectedHotel: IHotel | null = null;
 
 	async mounted() {
-		await this.$store.dispatch('hotels/pullHotels');
-		await this.$store.dispatch('users/pullUsers');
+		if (
+			!this.$store.state.auth.isLogged ||
+			this.$store.getters['auth/role'] === 'Guest'
+		) {
+			this.$router.push('/');
+		} else {
+			await this.$store.dispatch('hotels/pullHotels');
+			await this.$store.dispatch('users/pullUsers');
+		}
 	}
 
 	async refresh() {

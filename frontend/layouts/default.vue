@@ -6,7 +6,9 @@
 				<b-navbar-nav>
 					<b-nav-item to="/">Home</b-nav-item>
 					<b-nav-item to="/hotels">Hotels</b-nav-item>
-					<b-nav-item to="/users">Users</b-nav-item>
+					<b-nav-item v-if="$store.getters['auth/role'] === 'Admin'" to="/users"
+						>Users</b-nav-item
+					>
 				</b-navbar-nav>
 				<b-navbar-nav :class="$style.right">
 					<b-nav-item-dropdown v-if="isLogged" :text="userName">
@@ -86,6 +88,7 @@ export default class Layout extends Vue {
 	}
 
 	logout() {
+		this.$router.push('/');
 		this.$store.dispatch('auth/logout');
 	}
 }

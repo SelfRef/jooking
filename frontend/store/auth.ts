@@ -49,6 +49,9 @@ export const getters = {
 	token(state: IState): string {
 		return state.user?.token ?? '';
 	},
+	role(state: IState): string {
+		return state.user?.role ?? '';
+	},
 	axiosInstance(_state, getters): AxiosInstance {
 		const axiosInst = axios.create();
 		axiosInst.defaults.headers = {

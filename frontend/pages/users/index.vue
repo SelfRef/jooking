@@ -118,7 +118,11 @@ export default class Users extends Vue {
 	showInvalid: boolean = false;
 
 	async mounted() {
-		await this.$store.dispatch('users/pullUsers');
+		if (this.$store.getters['auth/role'] !== 'Admin') {
+			this.$router.push('/');
+		} else {
+			await this.$store.dispatch('users/pullUsers');
+		}
 	}
 
 	async refresh() {
