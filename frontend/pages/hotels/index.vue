@@ -2,6 +2,11 @@
 	<div :class="$style.container">
 		<b-container>
 			<b-row>
+				<b-col>
+					<b-button variant="primary" to="/hotels/edit">Edit hotels</b-button>
+				</b-col>
+			</b-row>
+			<b-row>
 				<b-col
 					v-for="hotel in hotels"
 					:key="hotel.id"

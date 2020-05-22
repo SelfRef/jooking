@@ -15,10 +15,45 @@
 								</b-button>
 							</b-button-group>
 						</template>
-						<b-table :items="hotels" :fields="fields">
+						<b-table
+							:items="hotels"
+							:fields="fields"
+							selectable
+							select-mode="single"
+							@row-selected="selectRow"
+						>
 							<template v-slot:cell(userId)="data">
 								{{ userNameById(data.item.userId) }}
 							</template>
+							<template v-slot:cell(actions)="data">
+								<b-button-group>
+									<b-button variant="primary" @click="editModal(data.item.id)"
+										><b-icon icon="pencil"
+									/></b-button>
+									<b-button variant="danger" @click="removeModal(data.item.id)"
+										><b-icon icon="trash"
+									/></b-button>
+								</b-button-group>
+							</template>
+						</b-table>
+					</b-card>
+				</b-col>
+			</b-row>
+			<b-row v-if="selectedHotel" :class="$style.roomsRow">
+				<b-col>
+					<b-card>
+						<template v-slot:header>
+							<h4 class="float-left">Rooms</h4>
+							<b-button-group class="float-right">
+								<b-button @click="refresh">
+									Refresh
+								</b-button>
+								<b-button variant="success" @click="editModal">
+									Add new room
+								</b-button>
+							</b-button-group>
+						</template>
+						<b-table :items="selectedHotel.rooms" :fields="roomFields">
 							<template v-slot:cell(actions)="data">
 								<b-button-group>
 									<b-button variant="primary" @click="editModal(data.item.id)"
@@ -116,10 +151,34 @@ export default class Users extends Vue {
 		},
 	];
 
+	roomFields = [
+		{
+			key: 'number',
+			sortable: true,
+		},
+		{
+			key: 'standard',
+			sortable: true,
+		},
+		{
+			key: 'bedCount',
+			sortable: true,
+		},
+		{
+			key: 'bedSize',
+			sortable: false,
+		},
+		{
+			key: 'actions',
+			sortable: false,
+		},
+	];
+
 	hotel: IHotel = this.emptyHotel;
 	hotelId: number;
 	hotelToRemove: string = '';
 	showInvalid: boolean = false;
+	selectedHotel = null;
 
 	async mounted() {
 		await this.$store.dispatch('hotels/pullHotels');
@@ -214,6 +273,15 @@ export default class Users extends Vue {
 	async remove() {
 		await this.$store.dispatch('hotels/remove', this.hotelId);
 	}
+
+	selectRow(rows) {
+		if (rows[0]) this.selectHotel(rows[0].id);
+		else this.selectedHotel = null;
+	}
+
+	async selectHotel(id) {
+		this.selectedHotel = await this.$store.dispatch('hotels/pullHotel', id);
+	}
 }
 </script>
 
@@ -221,7 +289,8 @@ export default class Users extends Vue {
 .inputGroup {
 	margin: 20px 0;
 }
-.reservations {
+.reservations,
+.roomsRow {
 	margin-top: 50px;
 }
 </style>
