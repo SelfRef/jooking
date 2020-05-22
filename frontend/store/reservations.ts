@@ -19,12 +19,15 @@ export const actions = {
 			undefined,
 			rootGetters['auth/axiosInstance']
 		);
-		try {
-			reservation.id = 0;
-			await client.postReservation(new Reservation(reservation));
-		} catch (e) {
-			console.log(e);
-		}
+		reservation.id = 0;
+		await client.postReservation(new Reservation(reservation));
+	},
+	async pullMyReservations({ rootGetters }: ActionContext) {
+		const client = new ReservationsClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
+		return await client.getReservationUser();
 	},
 };
 

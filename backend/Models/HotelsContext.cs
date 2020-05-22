@@ -112,6 +112,7 @@ namespace HotelixApi.Models {
 			modelBuilder.Entity<User>().HasMany(u => u.Hotels).WithOne(h => h.User).HasForeignKey(h => h.UserId);
 			modelBuilder.Entity<User>().HasMany(u => u.Reservations).WithOne(r => r.User).HasForeignKey(r => r.UserId);
 			modelBuilder.Entity<Room>().HasMany(u => u.Reservations).WithOne(r => r.Room).HasForeignKey(r => r.RoomId);
+			modelBuilder.Entity<Hotel>().HasMany(h => h.Rooms).WithOne(r => r.Hotel).HasForeignKey(r => r.HotelId);
 			
 			modelBuilder.Entity<User>().HasData(users);
 			modelBuilder.Entity<Hotel>().HasData(hotels);

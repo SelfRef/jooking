@@ -11,7 +11,7 @@
 								></b-card-img>
 							</b-col>
 							<b-col md="8">
-								<b-card-body title="Janusz Nosacz">
+								<b-card-body :title="`${authData.name} ${authData.surname}`">
 									<b-input-group prepend="Email" :class="$style.inputGroup">
 										<b-form-input
 											readonly
@@ -33,7 +33,32 @@
 			<b-row>
 				<b-col>
 					<b-card :class="$style.reservations" title="Reservation history">
-						<b-table :items="reservations"></b-table>
+						<b-table
+							v-if="reservations.length > 0"
+							:items="reservations"
+							:fields="fields"
+						>
+							<template v-slot:cell(startDate)="data">
+								{{ localDate(data.item.startDate) }}
+							</template>
+							<template v-slot:cell(endDate)="data">
+								{{ localDate(data.item.endDate) }}
+							</template>
+							<template v-slot:cell(hotel)="data">
+								{{ data.item.room.hotel.name }}
+							</template>
+							<template v-slot:cell(room)="data">
+								{{ roomName(data.item.room) }}
+							</template>
+							<template v-slot:cell(actions)="data">
+								<b-button-group>
+									<b-button variant="primary" @click="generatePdf(data.item)"
+										><b-icon icon="download"
+									/></b-button>
+								</b-button-group>
+							</template>
+						</b-table>
+						<b-alert v-else>No reservations to show</b-alert>
 					</b-card>
 				</b-col>
 			</b-row>
@@ -43,40 +68,65 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import Jspdf from 'jspdf';
+import { IReservation, IRoom } from '@/lib/Api';
 
 @Component
 export default class Account extends Vue {
-	get authData() {
-		return this.$store.state.auth.user;
+	reservations = [];
+	fields = [
+		{
+			key: 'startDate',
+			sortable: true,
+		},
+		{
+			key: 'endDate',
+			sortable: true,
+		},
+		{
+			key: 'email',
+			sortable: true,
+		},
+		{
+			key: 'phone',
+			sortable: false,
+		},
+		{
+			key: 'hotel',
+			sortable: true,
+		},
+		{
+			key: 'room',
+			sortable: true,
+		},
+		{
+			key: 'actions',
+			sortable: false,
+		},
+	];
+
+	async mounted() {
+		this.reservations = await this.$store.dispatch(
+			'reservations/pullMyReservations'
+		);
 	}
 
-	get reservations() {
-		return [
-			{
-				hotel: 'Hotel Name',
-				room: 'Onion Standard 2x1',
-				startDate: '2020-01-01',
-				endDate: '2020-01-05',
-			},
-			{
-				hotel: 'Hotel Name',
-				room: 'Onion Standard 2x1',
-				startDate: '2020-01-01',
-				endDate: '2020-01-05',
-			},
-			{
-				hotel: 'Hotel Name',
-				room: 'Onion Standard 2x1',
-				startDate: '2020-01-01',
-				endDate: '2020-01-05',
-			},
-			{
-				hotel: 'Hotel Name',
-				room: 'Onion Standard 2x1',
-				startDate: '2020-01-01',
-				endDate: '2020-01-05',
-			},
-		];
+	get authData() {
+		return this.$store.state.auth.user || {};
+	}
+
+	roomName(room: IRoom) {
+		return `${room.standard} ${room.bedCount}x${room.bedSize} (no ${room.number})`;
+	}
+
+	localDate(date: Date) {
+		return date.toLocaleDateString('pl');
+	}
+
+	generatePdf(_item: IReservation) {
+		const doc = new Jspdf();
+		doc.text('Hello world!', 10, 10);
+		doc.save('a4.pdf');
 	}
 }
 </script>

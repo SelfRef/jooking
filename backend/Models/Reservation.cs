@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 
 public class Reservation {

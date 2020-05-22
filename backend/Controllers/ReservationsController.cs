@@ -7,108 +7,136 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelixApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace HotelixApi.Controllers
 {
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReservationsController : ControllerBase
-    {
-        private readonly HotelsContext _context;
+	[Authorize]
+	[Route("api/[controller]")]
+	[ApiController]
+	public class ReservationsController : ControllerBase
+	{
+		private readonly HotelsContext _context;
+		private readonly IHttpContextAccessor _httpContext;
 
-        public ReservationsController(HotelsContext context)
-        {
-            _context = context;
-        }
+		public ReservationsController(HotelsContext context, IHttpContextAccessor httpContextAccessor)
+		{
+			_context = context;
+			_httpContext = httpContextAccessor;
+		}
 
-        // GET: api/Reservations
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
-        {
-            return await _context.Reservations.ToListAsync();
-        }
+		// GET: api/Reservations
+		[Authorize(Roles = "Admin")]
+		[HttpGet]
+		public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
+		{
+			return await _context.Reservations.ToListAsync();
+		}
 
-        // GET: api/Reservations/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Reservation>> GetReservation(int id)
-        {
-            var reservation = await _context.Reservations.FindAsync(id);
+		// GET: api/Reservations/5
+		[HttpGet("{id}")]
+		[Authorize(Roles = "Admin")]
+		public async Task<ActionResult<Reservation>> GetReservation(int id)
+		{
+			var reservation = await _context.Reservations.FindAsync(id);
 
-            if (reservation == null)
-            {
-                return NotFound();
-            }
+			if (reservation == null)
+			{
+				return NotFound();
+			}
 
-            return reservation;
-        }
+			return reservation;
+		}
+		// GET: api/Reservations/User
+		[HttpGet("User")]
+		public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationUser()
+		{
+			var userId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
 
-        // PUT: api/Reservations/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> PutReservation(int id, Reservation reservation)
-        {
-            if (id != reservation.Id)
-            {
-                return BadRequest();
-            }
+			if (userId == null)
+			{
+				return NotFound();
+			}
 
-            _context.Entry(reservation).State = EntityState.Modified;
+			return await _context.Reservations
+				.Where(r => r.UserId.ToString() == userId)
+				.Include(r => r.Room)
+					.ThenInclude(r => r.Hotel)
+				.ToListAsync();
+		}
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ReservationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+		// PUT: api/Reservations/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to, for
+		// more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+		[HttpPut("{id}")]
+		[Authorize(Roles = "Admin")]
+		public async Task<IActionResult> PutReservation(int id, Reservation reservation)
+		{
+			if (id != reservation.Id)
+			{
+				return BadRequest();
+			}
 
-            return NoContent();
-        }
+			_context.Entry(reservation).State = EntityState.Modified;
 
-        // POST: api/Reservations
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
-        {
-            _context.Reservations.Add(reservation);
-            await _context.SaveChangesAsync();
+			try
+			{
+				await _context.SaveChangesAsync();
+			}
+			catch (DbUpdateConcurrencyException)
+			{
+				if (!ReservationExists(id))
+				{
+					return NotFound();
+				}
+				else
+				{
+					throw;
+				}
+			}
 
-            return CreatedAtAction("GetReservation", new { id = reservation.Id }, reservation);
-        }
+			return NoContent();
+		}
 
-        // DELETE: api/Reservations/5
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Reservation>> DeleteReservation(int id)
-        {
-            var reservation = await _context.Reservations.FindAsync(id);
-            if (reservation == null)
-            {
-                return NotFound();
-            }
+		// POST: api/Reservations
+		// To protect from overposting attacks, enable the specific properties you want to bind to, for
+		// more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+		[HttpPost]
+		public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
+		{
+			var userId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+			if (userId == null)
+			{
+				return NotFound();
+			}
 
-            _context.Reservations.Remove(reservation);
-            await _context.SaveChangesAsync();
+			reservation.UserId = int.Parse(userId);
+			_context.Reservations.Add(reservation);
+			await _context.SaveChangesAsync();
 
-            return reservation;
-        }
+			return CreatedAtAction("GetReservation", new { id = reservation.Id }, reservation);
+		}
 
-        private bool ReservationExists(int id)
-        {
-            return _context.Reservations.Any(e => e.Id == id);
-        }
-    }
+		// DELETE: api/Reservations/5
+		[HttpDelete("{id}")]
+		[Authorize(Roles = "Admin")]
+		public async Task<ActionResult<Reservation>> DeleteReservation(int id)
+		{
+			var reservation = await _context.Reservations.FindAsync(id);
+			if (reservation == null)
+			{
+				return NotFound();
+			}
+
+			_context.Reservations.Remove(reservation);
+			await _context.SaveChangesAsync();
+
+			return reservation;
+		}
+
+		private bool ReservationExists(int id)
+		{
+			return _context.Reservations.Any(e => e.Id == id);
+		}
+	}
 }

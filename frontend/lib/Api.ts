@@ -481,6 +481,51 @@ export class ReservationsClient {
         }
         return Promise.resolve<Reservation>(<any>null);
     }
+
+    getReservationUser(): Promise<Reservation[]> {
+        let url_ = this.baseUrl + "/api/Reservations/User";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            validateStatus: () => true,
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processGetReservationUser(_response);
+        });
+    }
+
+    protected processGetReservationUser(response: AxiosResponse): Promise<Reservation[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Reservation.fromJS(item));
+            }
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Reservation[]>(<any>null);
+    }
 }
 
 export class RoomsClient {
@@ -1229,7 +1274,7 @@ export class User implements IUser {
     password?: string | null;
     token?: string | null;
     registered?: Date;
-    role?: Role;
+    role?: string | null;
     reservations?: Reservation[] | null;
     hotels?: Hotel[] | null;
 
@@ -1307,15 +1352,9 @@ export interface IUser {
     password?: string | null;
     token?: string | null;
     registered?: Date;
-    role?: Role;
+    role?: string | null;
     reservations?: Reservation[] | null;
     hotels?: Hotel[] | null;
-}
-
-export enum Role {
-    Guest = "Guest",
-    Moderator = "Moderator",
-    Admin = "Admin",
 }
 
 export class Reservation implements IReservation {
@@ -1489,7 +1528,7 @@ export class UserResponse implements IUserResponse {
     email?: string | null;
     phone?: string | null;
     registered?: Date;
-    role?: Role;
+    role?: string | null;
 
     constructor(data?: IUserResponse) {
         if (data) {
@@ -1539,7 +1578,7 @@ export interface IUserResponse {
     email?: string | null;
     phone?: string | null;
     registered?: Date;
-    role?: Role;
+    role?: string | null;
 }
 
 export class UserRequest implements IUserRequest {
@@ -1548,7 +1587,7 @@ export class UserRequest implements IUserRequest {
     surname?: string | null;
     email?: string | null;
     phone?: string | null;
-    role?: Role;
+    role?: string | null;
 
     constructor(data?: IUserRequest) {
         if (data) {
@@ -1595,7 +1634,7 @@ export interface IUserRequest {
     surname?: string | null;
     email?: string | null;
     phone?: string | null;
-    role?: Role;
+    role?: string | null;
 }
 
 export interface FileResponse {
