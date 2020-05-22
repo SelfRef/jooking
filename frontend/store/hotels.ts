@@ -28,6 +28,10 @@ export const actions = {
 			commit('setHotels', hotels);
 		}
 	},
+	async pullHotel(_context: ActionContext, id: string) {
+		const client = new HotelsClient();
+		return await client.getHotel(Number(id));
+	},
 	async create({ dispatch }: ActionContext, hotel: IHotel) {
 		const client = new HotelsClient();
 		hotel.id = 0;

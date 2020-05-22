@@ -38,6 +38,8 @@ namespace JookingApi.Controllers
                 return NotFound();
             }
 
+            await _context.Rooms.Where(r => r.HotelId == id).LoadAsync();
+
             return HotelResponse.FromHotel(hotel);
         }
 

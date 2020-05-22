@@ -12,14 +12,15 @@ public class Hotel {
 }
 
 public class HotelResponse {
-	public static HotelResponse FromHotel(Hotel user) {
+	public static HotelResponse FromHotel(Hotel hotel) {
 		return new HotelResponse {
-			Id = user.Id,
-			Name = user.Name,
-			Description = user.Description,
-			Email = user.Email,
-			Phone = user.Phone,
-			UserId = user.UserId
+			Id = hotel.Id,
+			Name = hotel.Name,
+			Description = hotel.Description,
+			Email = hotel.Email,
+			Phone = hotel.Phone,
+			UserId = hotel.UserId,
+			Rooms = hotel.Rooms
 		};
 	}
 	public int Id { get; set; }
@@ -28,6 +29,7 @@ public class HotelResponse {
 	public string Email { get; set; }
 	public string Phone { get; set; }
 	public int UserId { get; set; }
+	public ICollection<Room> Rooms { get; set; }
 }
 
 public class HotelRequest {

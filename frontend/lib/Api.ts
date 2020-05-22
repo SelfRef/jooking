@@ -964,6 +964,7 @@ export class HotelResponse implements IHotelResponse {
     email?: string | null;
     phone?: string | null;
     userId?: number;
+    rooms?: Room[] | null;
 
     constructor(data?: IHotelResponse) {
         if (data) {
@@ -982,6 +983,11 @@ export class HotelResponse implements IHotelResponse {
             this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
             this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
             this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+            if (Array.isArray(_data["rooms"])) {
+                this.rooms = [] as any;
+                for (let item of _data["rooms"])
+                    this.rooms!.push(Room.fromJS(item));
+            }
         }
     }
 
@@ -1000,6 +1006,11 @@ export class HotelResponse implements IHotelResponse {
         data["email"] = this.email !== undefined ? this.email : <any>null;
         data["phone"] = this.phone !== undefined ? this.phone : <any>null;
         data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        if (Array.isArray(this.rooms)) {
+            data["rooms"] = [];
+            for (let item of this.rooms)
+                data["rooms"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -1011,122 +1022,7 @@ export interface IHotelResponse {
     email?: string | null;
     phone?: string | null;
     userId?: number;
-}
-
-export class HotelRequest implements IHotelRequest {
-    id?: number;
-    name?: string | null;
-    description?: string | null;
-    email?: string | null;
-    phone?: string | null;
-    userId?: number;
-
-    constructor(data?: IHotelRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
-            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
-            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
-            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
-            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): HotelRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new HotelRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["name"] = this.name !== undefined ? this.name : <any>null;
-        data["description"] = this.description !== undefined ? this.description : <any>null;
-        data["email"] = this.email !== undefined ? this.email : <any>null;
-        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
-        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
-        return data; 
-    }
-}
-
-export interface IHotelRequest {
-    id?: number;
-    name?: string | null;
-    description?: string | null;
-    email?: string | null;
-    phone?: string | null;
-    userId?: number;
-}
-
-export class Reservation implements IReservation {
-    id?: number;
-    startDate?: Date;
-    endDate?: Date;
-    room?: Room | null;
-    roomId?: number;
-    user?: User | null;
-    userId?: number;
-
-    constructor(data?: IReservation) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>null;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>null;
-            this.room = _data["room"] ? Room.fromJS(_data["room"]) : <any>null;
-            this.roomId = _data["roomId"] !== undefined ? _data["roomId"] : <any>null;
-            this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>null;
-            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): Reservation {
-        data = typeof data === 'object' ? data : {};
-        let result = new Reservation();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id !== undefined ? this.id : <any>null;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>null;
-        data["room"] = this.room ? this.room.toJSON() : <any>null;
-        data["roomId"] = this.roomId !== undefined ? this.roomId : <any>null;
-        data["user"] = this.user ? this.user.toJSON() : <any>null;
-        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
-        return data; 
-    }
-}
-
-export interface IReservation {
-    id?: number;
-    startDate?: Date;
-    endDate?: Date;
-    room?: Room | null;
-    roomId?: number;
-    user?: User | null;
-    userId?: number;
+    rooms?: Room[] | null;
 }
 
 export class Room implements IRoom {
@@ -1371,6 +1267,130 @@ export enum Role {
     Guest = "Guest",
     Moderator = "Moderator",
     Admin = "Admin",
+}
+
+export class Reservation implements IReservation {
+    id?: number;
+    startDate?: Date;
+    endDate?: Date;
+    email?: string | null;
+    phone?: string | null;
+    room?: Room | null;
+    roomId?: number;
+    user?: User | null;
+    userId?: number;
+
+    constructor(data?: IReservation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>null;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.room = _data["room"] ? Room.fromJS(_data["room"]) : <any>null;
+            this.roomId = _data["roomId"] !== undefined ? _data["roomId"] : <any>null;
+            this.user = _data["user"] ? User.fromJS(_data["user"]) : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): Reservation {
+        data = typeof data === 'object' ? data : {};
+        let result = new Reservation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>null;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["room"] = this.room ? this.room.toJSON() : <any>null;
+        data["roomId"] = this.roomId !== undefined ? this.roomId : <any>null;
+        data["user"] = this.user ? this.user.toJSON() : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        return data; 
+    }
+}
+
+export interface IReservation {
+    id?: number;
+    startDate?: Date;
+    endDate?: Date;
+    email?: string | null;
+    phone?: string | null;
+    room?: Room | null;
+    roomId?: number;
+    user?: User | null;
+    userId?: number;
+}
+
+export class HotelRequest implements IHotelRequest {
+    id?: number;
+    name?: string | null;
+    description?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    userId?: number;
+
+    constructor(data?: IHotelRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): HotelRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new HotelRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        return data; 
+    }
+}
+
+export interface IHotelRequest {
+    id?: number;
+    name?: string | null;
+    description?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    userId?: number;
 }
 
 export class UserResponse implements IUserResponse {

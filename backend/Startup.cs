@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using JookingApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace JookingApi
 {
@@ -31,8 +33,9 @@ namespace JookingApi
 			services.AddDbContext<HotelsContext>(opt => {
 				opt.UseInMemoryDatabase("Hotels");
 			});
-			services.AddControllers().AddJsonOptions(options => {
-				options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+			services.AddControllers().AddNewtonsoftJson(options => {
+				options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+				options.SerializerSettings.Converters.Add(new StringEnumConverter());
 			});
 			services.AddOpenApiDocument(document => document.DocumentName = "v1");
 			services.AddCors(o => o.AddPolicy("MyPolicy", builder =>

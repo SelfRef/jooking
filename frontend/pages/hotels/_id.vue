@@ -11,21 +11,16 @@
 								></b-card-img>
 							</b-col>
 							<b-col md="8">
-								<b-card-body title="Hotel Name">
+								<b-card-body :title="hotel.name">
+									<b-card-text>{{ hotel.description }} </b-card-text>
 									<b-card-text
-										>Lorem Ipsum is simply dummy text of the printing and
-										typesetting industry.
-									</b-card-text>
-									<b-card-text>
-										Reception open:
-										<ul>
-											<li>Mon-Fri: 06:00 - 23:00</li>
-											<li>Sat: 07:00 - 22:00</li>
-											<li>Sun: 08:00 - 21:00</li>
-										</ul>
-									</b-card-text>
-									<b-card-text>Phone number: 123456789</b-card-text>
-									<b-link>Website</b-link>
+										>Phone number:
+										<b-link>{{ hotel.phone }}</b-link></b-card-text
+									>
+									<b-card-text
+										>Email address:
+										<b-link>{{ hotel.email }}</b-link></b-card-text
+									>
 								</b-card-body>
 							</b-col>
 						</b-row>
@@ -35,12 +30,16 @@
 			<b-row>
 				<b-col>
 					<b-card :class="$style.form" bg-variant="light">
+						<b-alert v-if="submitted" :show="submitted" variant="success"
+							>Thank you for your reservation!</b-alert
+						>
 						<b-form-group
+							v-else
 							label="Make a reservation"
 							description="Note: Fields with * are required"
 							label-size="lg"
 						>
-							<b-form>
+							<b-form @submit.prevent="submit">
 								<b-form-group
 									label="Stay beginning*"
 									description="When your stay shoud begin"
@@ -49,7 +48,8 @@
 								>
 									<b-form-datepicker
 										id="startDate"
-										v-model="formData.start"
+										v-model="formData.startDate"
+										value-as-date
 										:min="minDateStart"
 										:state="startDateState"
 										required
@@ -63,9 +63,10 @@
 								>
 									<b-form-datepicker
 										id="endDate"
-										v-model="formData.end"
+										v-model="formData.endDate"
+										value-as-date
 										:min="minDateEnd"
-										:disabled="!formData.start"
+										:disabled="!formData.startDate"
 										:state="endDateState"
 										required
 									></b-form-datepicker>
@@ -91,7 +92,7 @@
 								>
 									<b-form-select
 										id="room"
-										v-model="formData.room"
+										v-model="formData.roomId"
 										required
 										:options="roomOptions"
 									></b-form-select>
@@ -130,16 +131,28 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { IHotelResponse, IRoom } from '@/lib/Api';
 
 @Component
 export default class HotelDetails extends Vue {
 	formData = {
-		start: '',
-		end: '',
-		room: null,
+		startDate: '',
+		endDate: '',
+		roomId: null,
 		phone: '',
 		email: '',
+		userId: 3,
 	};
+
+	hotel: IHotelResponse = {};
+	submitted = false;
+
+	async mounted() {
+		this.hotel = await this.$store.dispatch(
+			'hotels/pullHotel',
+			this.$route.params.id
+		);
+	}
 
 	get id() {
 		return Number(this.$route.params.id);
@@ -158,21 +171,21 @@ export default class HotelDetails extends Vue {
 	}
 
 	get startDateState() {
-		if (!this.formData.start) return null;
-		if (this.formData.end && this.daysDiff < 1) return false;
+		if (!this.formData.startDate) return null;
+		if (this.formData.endDate && this.daysDiff < 1) return false;
 		return true;
 	}
 
 	get endDateState() {
-		if (!this.formData.end) return null;
-		if (this.formData.start && this.daysDiff < 1) return false;
+		if (!this.formData.endDate) return null;
+		if (this.formData.startDate && this.daysDiff < 1) return false;
 		return true;
 	}
 
 	get daysDiff() {
-		if (!this.formData.start || !this.formData.end) return 0;
-		const startDate = Number(new Date(this.formData.start));
-		const endDate = Number(new Date(this.formData.end));
+		if (!this.formData.startDate || !this.formData.endDate) return 0;
+		const startDate = Number(new Date(this.formData.startDate));
+		const endDate = Number(new Date(this.formData.endDate));
 		const oneDay = 24 * 60 * 60 * 1000;
 		const diffDays = Math.round((endDate - startDate) / oneDay);
 		return diffDays;
@@ -181,18 +194,24 @@ export default class HotelDetails extends Vue {
 	get formValid() {
 		if (!this.startDateState) return false;
 		if (!this.endDateState) return false;
-		if (!this.formData.room) return false;
+		if (!this.formData.roomId) return false;
 		if (!this.formData.phone) return false;
 		return true;
 	}
 
 	get roomOptions() {
-		return [
-			{ value: null, text: 'Please select room' },
-			{ value: 1, text: 'Onion Standard 2x1' },
-			{ value: 2, text: 'Comfort Standard 1x2' },
-			{ value: 3, text: 'Luxury Standard 1x2' },
-		];
+		const rooms: IRoom[] = this.hotel?.rooms ?? [];
+		return rooms.map(r => {
+			return {
+				value: r.id,
+				text: `${r.standard} ${r.bedCount}x${r.bedSize} (no ${r.number})`,
+			};
+		});
+	}
+
+	async submit() {
+		await this.$store.dispatch('reservations/create', this.formData);
+		this.submitted = true;
 	}
 }
 </script>
