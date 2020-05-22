@@ -32,16 +32,12 @@
 			</b-row>
 			<b-row>
 				<b-col>
-					<b-card :class="$style.reservations">
+					<b-card v-if="reservations.length > 0" :class="$style.reservations">
 						<h4 class="float-left">Reservation history</h4>
 						<b-button-group class="float-right" :class="$style.header">
 							<b-button @click="generatePdf()">Generate PDF from all</b-button>
 						</b-button-group>
-						<b-table
-							v-if="reservations.length > 0"
-							:items="reservations"
-							:fields="fields"
-						>
+						<b-table :items="reservations" :fields="fields">
 							<template v-slot:cell(startDate)="data">
 								{{ localDate(data.item.startDate) }}
 							</template>
@@ -62,8 +58,10 @@
 								</b-button-group>
 							</template>
 						</b-table>
-						<b-alert v-else>No reservations to show</b-alert>
 					</b-card>
+					<b-alert v-else :class="$style.reservations" show
+						>No reservations to show</b-alert
+					>
 				</b-col>
 			</b-row>
 		</b-container>

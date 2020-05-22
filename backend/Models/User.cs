@@ -32,7 +32,8 @@ public class UserResponse {
 			Email = user.Email,
 			Phone = user.Phone,
 			Registered = user.Registered,
-			Role = user.Role
+			Role = user.Role,
+			Reservations = user.Reservations,
 		};
 	}
 	public int Id { get; set; }
@@ -42,6 +43,7 @@ public class UserResponse {
 	public string Phone { get; set; }
 	public DateTime Registered { get; set; }
 	public string Role { get; set; }
+	public ICollection<Reservation> Reservations { get; set; }
 }
 
 public class UserRequest {

@@ -35,6 +35,13 @@ export const actions = {
 			commit('setUsers', users);
 		}
 	},
+	async pullUser({ rootGetters }: ActionContext, id: number) {
+		const client = new UsersClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
+		return await client.getUser(id);
+	},
 	async create({ dispatch, rootGetters }: ActionContext, user: IUser) {
 		const client = new UsersClient(
 			undefined,

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System;
+using System.Text.Json.Serialization;
 
 public class Reservation {
 	public int Id { get; set; }

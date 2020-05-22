@@ -91,21 +91,27 @@ namespace HotelixApi.Models {
 					StartDate = DateTime.Parse("2020-01-01"),
 					EndDate = DateTime.Parse("2020-01-15"),
 					RoomId = 1,
-					UserId = 3
+					UserId = 3,
+					Phone = "123456789",
+					Email = "abcd"
 				},
 				new Reservation() {
 					Id = 2,
 					StartDate = DateTime.Parse("2020-02-01"),
 					EndDate = DateTime.Parse("2020-02-15"),
 					RoomId = 1,
-					UserId = 3
+					UserId = 3,
+					Phone = "123456789",
+					Email = "abcd"
 				},
 				new Reservation() {
 					Id = 3,
 					StartDate = DateTime.Parse("2020-03-01"),
 					EndDate = DateTime.Parse("2020-03-15"),
 					RoomId = 1,
-					UserId = 3
+					UserId = 3,
+					Phone = "123456789",
+					Email = "abcd"
 				}
 			};
 

@@ -1529,6 +1529,7 @@ export class UserResponse implements IUserResponse {
     phone?: string | null;
     registered?: Date;
     role?: string | null;
+    reservations?: Reservation[] | null;
 
     constructor(data?: IUserResponse) {
         if (data) {
@@ -1548,6 +1549,11 @@ export class UserResponse implements IUserResponse {
             this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
             this.registered = _data["registered"] ? new Date(_data["registered"].toString()) : <any>null;
             this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
+            if (Array.isArray(_data["reservations"])) {
+                this.reservations = [] as any;
+                for (let item of _data["reservations"])
+                    this.reservations!.push(Reservation.fromJS(item));
+            }
         }
     }
 
@@ -1567,6 +1573,11 @@ export class UserResponse implements IUserResponse {
         data["phone"] = this.phone !== undefined ? this.phone : <any>null;
         data["registered"] = this.registered ? this.registered.toISOString() : <any>null;
         data["role"] = this.role !== undefined ? this.role : <any>null;
+        if (Array.isArray(this.reservations)) {
+            data["reservations"] = [];
+            for (let item of this.reservations)
+                data["reservations"].push(item.toJSON());
+        }
         return data; 
     }
 }
@@ -1579,6 +1590,7 @@ export interface IUserResponse {
     phone?: string | null;
     registered?: Date;
     role?: string | null;
+    reservations?: Reservation[] | null;
 }
 
 export class UserRequest implements IUserRequest {

@@ -49,6 +49,11 @@ namespace HotelixApi.Controllers
 		public async Task<ActionResult<UserResponse>> GetUser(int id)
 		{
 			var user = await _context.Users.FindAsync(id);
+			await _context.Reservations
+			.Include(r => r.Room)
+				.ThenInclude(r => r.Hotel)
+			.Where(r => r.UserId == id)
+			.LoadAsync();
 
 			if (user == null)
 			{

@@ -22,6 +22,13 @@ export const actions = {
 		reservation.id = 0;
 		await client.postReservation(new Reservation(reservation));
 	},
+	async remove({ rootGetters }: ActionContext, id: number) {
+		const client = new ReservationsClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
+		await client.deleteReservation(id);
+	},
 	async pullMyReservations({ rootGetters }: ActionContext) {
 		const client = new ReservationsClient(
 			undefined,
