@@ -127,34 +127,34 @@
 			<b-form>
 				<b-form-group label="Number">
 					<b-form-input
-						v-model="selectedHotel.number"
+						v-model="room.number"
 						type="text"
 						required
 					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Standard">
 					<b-form-select
-						v-model="selectedHotel.standard"
+						v-model="room.standard"
 						:options="roomStandards"
 						required
 					></b-form-select>
 				</b-form-group>
 				<b-form-group label="Bed Count">
 					<b-form-input
-						v-model="selectedHotel.bedCount"
+						v-model="room.bedCount"
 						type="number"
 						required
 					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Bed Size">
 					<b-form-input
-						v-model="selectedHotel.bedSize"
+						v-model="room.bedSize"
 						type="number"
 						required
 					></b-form-input>
 				</b-form-group>
 			</b-form>
-			<b-alert variant="danger" :show="showInvalid"
+			<b-alert variant="danger" :show="showRoomInvalid"
 				>Check all fields before submitting</b-alert
 			>
 		</b-modal>
@@ -369,10 +369,10 @@ export default class Users extends Vue {
 			} else {
 				await this.$store.dispatch('rooms/createRoom', this.room);
 			}
-			this.showInvalid = false;
+			this.showRoomInvalid = false;
 		} else {
 			$event.preventDefault();
-			this.showInvalid = true;
+			this.showRoomInvalid = true;
 		}
 	}
 
