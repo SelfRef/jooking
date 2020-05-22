@@ -32,7 +32,11 @@
 			</b-row>
 			<b-row>
 				<b-col>
-					<b-card :class="$style.reservations" title="Reservation history">
+					<b-card :class="$style.reservations">
+						<h4 class="float-left">Reservation history</h4>
+						<b-button-group class="float-right" :class="$style.header">
+							<b-button @click="generatePdf()">Generate PDF from all</b-button>
+						</b-button-group>
 						<b-table
 							v-if="reservations.length > 0"
 							:items="reservations"
@@ -73,8 +77,16 @@ import { IReservation, IRoom } from '@/lib/Api';
 
 @Component
 export default class Account extends Vue {
-	reservations = [];
+	reservations: IReservation[] = [];
 	fields = [
+		{
+			key: 'hotel',
+			sortable: true,
+		},
+		{
+			key: 'room',
+			sortable: true,
+		},
 		{
 			key: 'startDate',
 			sortable: true,
@@ -84,19 +96,11 @@ export default class Account extends Vue {
 			sortable: true,
 		},
 		{
-			key: 'email',
-			sortable: true,
-		},
-		{
 			key: 'phone',
 			sortable: false,
 		},
 		{
-			key: 'hotel',
-			sortable: true,
-		},
-		{
-			key: 'room',
+			key: 'email',
 			sortable: true,
 		},
 		{
@@ -123,10 +127,54 @@ export default class Account extends Vue {
 		return date.toLocaleDateString('pl');
 	}
 
-	generatePdf(_item: IReservation) {
+	addRow(item: IReservation) {
+		let data = '';
+		data += '<tr>';
+		data += `<td>${item.room?.hotel?.name ?? '[none]'}</td>`;
+		data += `<td>${item.room ? this.roomName(item.room) : '[none]'}</td>`;
+		data += `<td>${
+			item.startDate ? this.localDate(item.startDate) : '[none]'
+		}</td>`;
+		data += `<td>${
+			item.endDate ? this.localDate(item.endDate) : '[none]'
+		}</td>`;
+		data += `<td>${item.phone ?? '[none]'}</td>`;
+		data += `<td>${item.email ?? '[none]'}</td>`;
+		data += '</tr>';
+		return data;
+	}
+
+	generateTable(item?: IReservation) {
+		let data = '<table style="width: 100%;"><tr>';
+		const headers = [
+			'Hotel',
+			'Room',
+			'Start Date',
+			'End Date',
+			'Phone',
+			'Email',
+		];
+		headers.forEach(h => {
+			data += `<th>${h}</th>`;
+		});
+		data += '</tr>';
+		if (item) data += this.addRow(item);
+		else
+			this.reservations.forEach(r => {
+				data += this.addRow(r);
+			});
+		data += '</table>';
+		return data;
+	}
+
+	generatePdf(item?: IReservation) {
 		const doc = new Jspdf();
-		doc.text('Hello world!', 10, 10);
-		doc.save('a4.pdf');
+		doc.setFontSize(16);
+		doc.text(20, 20, 'Reservation list');
+		doc.fromHTML(this.generateTable(item), 15, 15, {
+			width: 200,
+		});
+		doc.save();
 	}
 }
 </script>
@@ -137,5 +185,8 @@ export default class Account extends Vue {
 }
 .reservations {
 	margin-top: 50px;
+}
+.header {
+	margin-bottom: 10px;
 }
 </style>
