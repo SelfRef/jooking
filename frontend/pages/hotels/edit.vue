@@ -48,12 +48,16 @@
 								<b-button @click="refresh">
 									Refresh
 								</b-button>
-								<b-button variant="success" @click="editModal">
+								<b-button variant="success" @click="editRoomModal">
 									Add new room
 								</b-button>
 							</b-button-group>
 						</template>
-						<b-table :items="selectedHotel.rooms" :fields="roomFields">
+						<b-table
+							v-if="selectedHotel.rooms && selectedHotel.rooms.length > 0"
+							:items="selectedHotel.rooms"
+							:fields="roomFields"
+						>
 							<template v-slot:cell(actions)="data">
 								<b-button-group>
 									<b-button
@@ -69,6 +73,7 @@
 								</b-button-group>
 							</template>
 						</b-table>
+						<b-alert v-else show>This hotel does not have any rooms</b-alert>
 					</b-card>
 				</b-col>
 			</b-row>
