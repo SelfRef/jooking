@@ -24,6 +24,7 @@ namespace HotelixApi.Controllers
 
         // GET: api/Hotels
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<HotelResponse>>> GetHotels()
         {
             return await _context.Hotels.Select(hotel => HotelResponse.FromHotel(hotel)).ToListAsync();
@@ -49,6 +50,7 @@ namespace HotelixApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Moderator")]
         public async Task<IActionResult> PutHotel(int id, HotelRequest hotel)
         {
             if (id != hotel.Id)
@@ -87,6 +89,7 @@ namespace HotelixApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
+        [Authorize(Roles = "Admin,Moderator")]
         public async Task<ActionResult<HotelResponse>> PostHotel(HotelRequest hotel)
         {
             var hotelModel = new Hotel() {
@@ -105,6 +108,7 @@ namespace HotelixApi.Controllers
 
         // DELETE: api/Hotels/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Moderator")]
         public async Task<ActionResult<HotelResponse>> DeleteHotel(int id)
         {
             var hotel = await _context.Hotels.FindAsync(id);

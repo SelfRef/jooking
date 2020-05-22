@@ -23,6 +23,7 @@ namespace HotelixApi.Controllers
         }
 
         // GET: api/Reservations
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
         {
@@ -47,6 +48,7 @@ namespace HotelixApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutReservation(int id, Reservation reservation)
         {
             if (id != reservation.Id)
@@ -89,6 +91,7 @@ namespace HotelixApi.Controllers
 
         // DELETE: api/Reservations/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Reservation>> DeleteReservation(int id)
         {
             var reservation = await _context.Reservations.FindAsync(id);

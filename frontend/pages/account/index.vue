@@ -47,7 +47,7 @@ import { Vue, Component } from 'vue-property-decorator';
 @Component
 export default class Account extends Vue {
 	get authData() {
-		return this.$store.state.auth;
+		return this.$store.state.auth.user;
 	}
 
 	get reservations() {

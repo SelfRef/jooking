@@ -1,10 +1,13 @@
 import { Commit, Dispatch } from 'vuex';
+import axios, { AxiosInstance } from 'axios';
 import { IUser, UsersClient, Login } from '@/lib/Api';
 
 type ActionContext = {
 	commit: Commit;
 	state: IState;
 	dispatch: Dispatch;
+	getters;
+	rootGetters;
 };
 type IState = {
 	isLogged: boolean;
@@ -26,8 +29,8 @@ export const mutations = {
 };
 
 export const actions = {
-	async login({ commit }: ActionContext, login: Login) {
-		const client = new UsersClient();
+	async login({ commit, getters }: ActionContext, login: Login) {
+		const client = new UsersClient(undefined, getters['auth/axiosInstance']);
 		try {
 			const user = await client.authenticate(login);
 			commit('setUser', user);
@@ -45,5 +48,12 @@ export const actions = {
 export const getters = {
 	token(state: IState): string {
 		return state.user?.token ?? '';
+	},
+	axiosInstance(_state, getters): AxiosInstance {
+		const axiosInst = axios.create();
+		axiosInst.defaults.headers = {
+			Authorization: `Bearer ${getters.token}`,
+		};
+		return axiosInst;
 	},
 };

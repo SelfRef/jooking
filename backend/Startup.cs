@@ -20,6 +20,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using HotelixApi.Services;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.AspNetCore.Identity;
 
 namespace HotelixApi
 {
@@ -28,6 +30,7 @@ namespace HotelixApi
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+			IdentityModelEventSource.ShowPII = true;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -56,12 +59,14 @@ namespace HotelixApi
 			}).AddJwtBearer(x => {
 				x.RequireHttpsMetadata = false;
 				x.SaveToken = true;
+				//x.Authority = Configuration["JwtToken:Authority"];
 				x.TokenValidationParameters = new TokenValidationParameters
 				{
-						ValidateIssuerSigningKey = true,
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtToken:SecretKey"])),
-						ValidateIssuer = false,
-						ValidateAudience = false
+					ValidIssuer = Configuration["JwtToken:Issuer"],
+					ValidateIssuerSigningKey = true,
+					IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtToken:SecretKey"])),
+					ValidateIssuer = false,
+					ValidateAudience = false
 				};
 			});
 			services.AddScoped<IUserService, UserService>();

@@ -39,9 +39,21 @@ namespace HotelixApi.Services
 			if (user == null)
 				return null;
 
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtToken:SecretKey"]));
-			var token = new JwtSecurityToken();
-			user.Token = new JwtSecurityTokenHandler().WriteToken(token);
+			var tokenHandler = new JwtSecurityTokenHandler();
+			var key = Encoding.UTF8.GetBytes(_config["JwtToken:SecretKey"]);
+
+			var tokenDescriptor = new SecurityTokenDescriptor
+			{
+				Subject = new ClaimsIdentity(new Claim[]
+				{
+					new Claim(ClaimTypes.Name, user.Id.ToString()),
+					new Claim(ClaimTypes.Role, user.Role)
+				}),
+				Expires = DateTime.UtcNow.AddDays(7),
+				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+			};
+			var token = tokenHandler.CreateToken(tokenDescriptor);
+			user.Token = tokenHandler.WriteToken(token);
 
 			return user;
 		}

@@ -12,15 +12,15 @@ public class User {
 	public string Password { get; set; }
 	public string Token { get; set; }
 	public DateTime Registered { get; set; }
-	public Role Role { get; set; }
+	public string Role { get; set; }
 	public ICollection<Reservation> Reservations { get; set; }
 	public ICollection<Hotel> Hotels { get; set; }
 }
 
-public enum Role {
-	Guest,
-	Moderator,
-	Admin
+public static class Role {
+	public const string Guest = "Guest";
+	public const string Moderator = "Moderator";
+	public const string Admin = "Admin";
 }
 
 public class UserResponse {
@@ -41,7 +41,7 @@ public class UserResponse {
 	public string Email { get; set; }
 	public string Phone { get; set; }
 	public DateTime Registered { get; set; }
-	public Role Role { get; set; }
+	public string Role { get; set; }
 }
 
 public class UserRequest {
@@ -50,5 +50,5 @@ public class UserRequest {
 	public string Surname { get; set; }
 	public string Email { get; set; }
 	public string Phone { get; set; }
-	public Role Role { get; set; }
+	public string Role { get; set; }
 }

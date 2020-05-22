@@ -11,7 +11,7 @@ using HotelixApi.Services;
 
 namespace HotelixApi.Controllers
 {
-	[Authorize]
+	[Authorize(Roles = "Admin")]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class UsersController : ControllerBase

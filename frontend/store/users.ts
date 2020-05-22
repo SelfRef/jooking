@@ -4,6 +4,7 @@ type ActionContext = {
 	commit: Commit;
 	state: IState;
 	dispatch: Dispatch;
+	rootGetters;
 };
 
 interface IState {
@@ -21,15 +22,24 @@ export const mutations = {
 };
 
 export const actions = {
-	async pullUsers({ commit, state }: ActionContext, force: boolean) {
+	async pullUsers(
+		{ commit, state, rootGetters }: ActionContext,
+		force: boolean
+	) {
 		if (state.users === null || force) {
-			const client = new UsersClient();
+			const client = new UsersClient(
+				undefined,
+				rootGetters['auth/axiosInstance']
+			);
 			const users = await client.getUsers();
 			commit('setUsers', users);
 		}
 	},
-	async create({ dispatch }: ActionContext, user: IUser) {
-		const client = new UsersClient();
+	async create({ dispatch, rootGetters }: ActionContext, user: IUser) {
+		const client = new UsersClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
 		user.id = 0;
 		try {
 			await client.postUser(new User(user));
@@ -38,8 +48,11 @@ export const actions = {
 		}
 		await dispatch('pullUsers', true);
 	},
-	async edit({ dispatch }: ActionContext, user: IUser) {
-		const client = new UsersClient();
+	async edit({ dispatch, rootGetters }: ActionContext, user: IUser) {
+		const client = new UsersClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
 		try {
 			await client.putUser(user.id || 0, new User(user));
 		} catch (e) {
@@ -47,8 +60,11 @@ export const actions = {
 		}
 		await dispatch('pullUsers', true);
 	},
-	async remove({ dispatch }: ActionContext, id: number) {
-		const client = new UsersClient();
+	async remove({ dispatch, rootGetters }: ActionContext, id: number) {
+		const client = new UsersClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
 		try {
 			await client.deleteUser(id);
 		} catch (e) {
