@@ -2,7 +2,7 @@
 	<div :class="$style.container">
 		<header>
 			<b-navbar variant="dark" type="dark" :class="$style.navbar">
-				<b-navbar-brand>Jooking</b-navbar-brand>
+				<b-navbar-brand>{{ $store.state.app.name }}</b-navbar-brand>
 				<b-navbar-nav>
 					<b-nav-item to="/">Home</b-nav-item>
 					<b-nav-item to="/hotels">Hotels</b-nav-item>

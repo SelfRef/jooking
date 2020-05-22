@@ -1,8 +1,8 @@
 {
-  "name": "jooking",
+  "name": "hotelix",
   "version": "1.0.0",
-  "description": "Jooking ya Booking",
-  "author": "TM",
+  "description": "Room Reservation Service",
+  "author": "",
   "private": true,
   "scripts": {
     "dev": "nuxt-ts",
@@ -17,7 +17,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": ""
     }
   },
   "dependencies": {

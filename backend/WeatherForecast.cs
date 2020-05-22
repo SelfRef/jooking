@@ -1,6 +1,6 @@
 using System;
 
-namespace JookingApi
+namespace HotelixApi
 {
 	public class WeatherForecast
 	{

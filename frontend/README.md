@@ -1,6 +1,6 @@
-# jooking
+# hotelix
 
-> Jooking ya Booking
+> Room Reservation Service
 
 ## Build Setup
 

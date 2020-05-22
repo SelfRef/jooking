@@ -12,11 +12,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-using JookingApi.Models;
+using HotelixApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace JookingApi
+namespace HotelixApi
 {
 	public class Startup
 	{

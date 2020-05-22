@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using JookingApi.Models;
+using HotelixApi.Models;
 
-namespace JookingApi
+namespace HotelixApi
 {
 	public class Program
 	{
