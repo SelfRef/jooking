@@ -6,18 +6,35 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelixApi.Models;
+using Microsoft.AspNetCore.Authorization;
+using HotelixApi.Services;
 
 namespace HotelixApi.Controllers
 {
+	[Authorize]
 	[Route("api/[controller]")]
 	[ApiController]
 	public class UsersController : ControllerBase
 	{
 		private readonly HotelsContext _context;
+		private readonly IUserService _userService;
 
-		public UsersController(HotelsContext context)
+		public UsersController(HotelsContext context, IUserService userService)
 		{
 			_context = context;
+			_userService = userService;
+		}
+
+		[AllowAnonymous]
+		[HttpPost("authenticate")]
+		public ActionResult<User> Authenticate(Login model)
+		{
+			var user = _userService.Authenticate(model.Email, model.Password);
+
+			if (user == null)
+				return BadRequest(new { message = "Username or password is incorrect" });
+
+			return user;
 		}
 
 		// GET: api/Users
@@ -86,7 +103,8 @@ namespace HotelixApi.Controllers
 		[HttpPost]
 		public async Task<ActionResult<UserResponse>> PostUser(UserRequest user)
 		{
-			var userModel = new User() {
+			var userModel = new User()
+			{
 				Id = 0,
 				Name = user.Name,
 				Surname = user.Surname,
@@ -98,7 +116,7 @@ namespace HotelixApi.Controllers
 			_context.Users.Add(userModel);
 			await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetUser", new {id = userModel.Id}, UserResponse.FromUser(userModel));
+			return CreatedAtAction("GetUser", new { id = userModel.Id }, UserResponse.FromUser(userModel));
 		}
 
 		// DELETE: api/Users/5

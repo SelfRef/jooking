@@ -54,11 +54,7 @@
 					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Email">
-					<b-form-input
-						v-model="user.email"
-						type="phone"
-						required
-					></b-form-input>
+					<b-form-input v-model="user.phone" type="phone"></b-form-input>
 				</b-form-group>
 				<b-form-group label="Role">
 					<b-form-select

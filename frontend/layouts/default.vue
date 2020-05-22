@@ -12,10 +12,10 @@
 					<b-nav-item-dropdown v-if="isLogged" :text="userName">
 						<b-dropdown-item to="/account">Account</b-dropdown-item>
 						<hr />
-						<b-dropdown-item>Logout</b-dropdown-item>
+						<b-dropdown-item @click="logout">Logout</b-dropdown-item>
 					</b-nav-item-dropdown>
 					<b-nav-form v-else>
-						<b-button variant="outline-primary" to="/logout">Login</b-button>
+						<b-button v-b-modal.login variant="outline-primary">Login</b-button>
 					</b-nav-form>
 				</b-navbar-nav>
 			</b-navbar>
@@ -24,11 +24,33 @@
 			<nuxt />
 		</main>
 		<footer></footer>
+		<b-modal id="login" v-model="loginModal" title="Login" @ok="login">
+			<b-form @submit.prevent>
+				<b-form-group label="Email">
+					<b-form-input
+						v-model="loginForm.email"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Password">
+					<b-form-input
+						v-model="loginForm.password"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+			</b-form>
+			<b-alert :show="Boolean(loginError)" variant="danger">{{
+				loginError
+			}}</b-alert>
+		</b-modal>
 	</div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { Login } from '@/lib/Api';
 
 @Component
 export default class Layout extends Vue {
@@ -37,7 +59,34 @@ export default class Layout extends Vue {
 	}
 
 	get userName() {
-		return this.$store.state.auth.name;
+		return `${this.$store.state.auth.user.name} ${this.$store.state.auth.user.surname}`;
+	}
+
+	get formValid() {
+		return this.loginForm.email && this.loginForm.password;
+	}
+
+	loginForm: Login = new Login();
+	loginError = '';
+
+	async login($event) {
+		$event.preventDefault();
+		if (!this.formValid) {
+			this.loginError = 'Fill all fields';
+			return;
+		}
+		try {
+			await this.$store.dispatch('auth/login', this.loginForm);
+			this.loginError = '';
+			this.$bvModal.hide('login');
+		} catch (e) {
+			const response = JSON.parse(await e.response.text()).message;
+			this.loginError = response;
+		}
+	}
+
+	logout() {
+		this.$store.dispatch('auth/logout');
 	}
 }
 </script>
