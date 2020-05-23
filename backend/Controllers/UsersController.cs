@@ -41,6 +41,10 @@ namespace HotelixApi.Controllers
 		[HttpPost("register")]
 		public async Task<ActionResult<UserResponse>> PostUser(UserRegisterRequest user)
 		{
+			var currentUser = await _context.Users.Where(u => u.Email == user.Email).FirstOrDefaultAsync();
+			if (currentUser != null) {
+				return BadRequest(new { message = "User with this email already exists" });
+			}
 			var userModel = new User()
 			{
 				Id = 0,

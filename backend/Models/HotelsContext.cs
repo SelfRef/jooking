@@ -115,6 +115,7 @@ namespace HotelixApi.Models {
 				}
 			};
 
+			modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 			modelBuilder.Entity<User>().HasMany(u => u.Hotels).WithOne(h => h.User).HasForeignKey(h => h.UserId);
 			modelBuilder.Entity<User>().HasMany(u => u.Reservations).WithOne(r => r.User).HasForeignKey(r => r.UserId);
 			modelBuilder.Entity<Room>().HasMany(u => u.Reservations).WithOne(r => r.Room).HasForeignKey(r => r.RoomId);
