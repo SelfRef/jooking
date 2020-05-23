@@ -293,7 +293,6 @@ export default class Users extends Vue {
 			this.user.name &&
 			this.user.surname &&
 			this.user.email &&
-			this.user.password &&
 			this.user.role
 		) {
 			if (this.user.id) {
