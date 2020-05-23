@@ -1,6 +1,12 @@
 import { Commit, Dispatch } from 'vuex';
 import axios, { AxiosInstance } from 'axios';
-import { IUser, UsersClient, Login } from '@/lib/Api';
+import {
+	IUser,
+	UsersClient,
+	Login,
+	IUserRegisterRequest,
+	UserRegisterRequest,
+} from '@/lib/Api';
 
 type ActionContext = {
 	commit: Commit;
@@ -39,6 +45,18 @@ export const actions = {
 			commit('setLogged', false);
 			throw e;
 		}
+	},
+	async register(
+		{ getters, dispatch }: ActionContext,
+		register: IUserRegisterRequest
+	) {
+		const client = new UsersClient(undefined, getters['auth/axiosInstance']);
+		await client.postUser(new UserRegisterRequest(register));
+		const login = new Login({
+			email: register.email ?? '',
+			password: register.password ?? '',
+		});
+		await dispatch('login', login);
 	},
 	logout({ commit }: ActionContext) {
 		commit('setUser', null);

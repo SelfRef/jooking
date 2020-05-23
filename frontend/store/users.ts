@@ -49,7 +49,7 @@ export const actions = {
 		);
 		user.id = 0;
 		try {
-			await client.postUser(new User(user));
+			await client.postUser2(new User(user));
 		} catch (e) {
 			console.log(e);
 		}

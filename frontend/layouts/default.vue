@@ -17,7 +17,10 @@
 						<b-dropdown-item @click="logout">Logout</b-dropdown-item>
 					</b-nav-item-dropdown>
 					<b-nav-form v-else>
-						<b-button v-b-modal.login variant="outline-primary">Login</b-button>
+						<b-button-group>
+							<b-button v-b-modal.register variant="success">Register</b-button>
+							<b-button v-b-modal.login variant="primary">Login</b-button>
+						</b-button-group>
 					</b-nav-form>
 				</b-navbar-nav>
 			</b-navbar>
@@ -47,12 +50,54 @@
 				loginError
 			}}</b-alert>
 		</b-modal>
+		<b-modal id="register" title="Register" @ok="register">
+			<b-form @submit.prevent>
+				<b-form-group label="Name">
+					<b-form-input
+						v-model="registerForm.name"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Surname">
+					<b-form-input
+						v-model="registerForm.surname"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Email">
+					<b-form-input
+						v-model="registerForm.email"
+						type="text"
+						required
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Phone">
+					<b-form-input
+						v-model="registerForm.phone"
+						required
+						type="text"
+					></b-form-input>
+				</b-form-group>
+				<b-form-group label="Password">
+					<b-form-input
+						v-model="registerForm.password"
+						type="password"
+						required
+					></b-form-input>
+				</b-form-group>
+			</b-form>
+			<b-alert :show="Boolean(registerError)" variant="danger">{{
+				registerError
+			}}</b-alert>
+		</b-modal>
 	</div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-import { Login } from '@/lib/Api';
+import { Login, UserRegisterRequest } from '@/lib/Api';
 
 @Component
 export default class Layout extends Vue {
@@ -68,8 +113,20 @@ export default class Layout extends Vue {
 		return this.loginForm.email && this.loginForm.password;
 	}
 
+	get registerFormValid() {
+		return (
+			this.registerForm.email &&
+			this.registerForm.password &&
+			this.registerForm.name &&
+			this.registerForm.surname &&
+			this.registerForm.phone
+		);
+	}
+
 	loginForm: Login = new Login();
+	registerForm: UserRegisterRequest = new UserRegisterRequest();
 	loginError = '';
+	registerError = '';
 
 	async login($event) {
 		$event.preventDefault();
@@ -85,6 +142,25 @@ export default class Layout extends Vue {
 		} catch (e) {
 			const response = e.response.message;
 			this.loginError = response;
+		} finally {
+			this.loginForm.password = '';
+		}
+	}
+
+	async register($event) {
+		$event.preventDefault();
+		if (!this.registerFormValid) {
+			this.registerError = 'Fill all fields';
+			return;
+		}
+		try {
+			await this.$store.dispatch('auth/register', this.registerForm);
+			this.registerError = '';
+			this.$bvModal.hide('register');
+			this.registerForm = new UserRegisterRequest();
+		} catch (e) {
+			const response = e.response.message;
+			this.registerError = response;
 		} finally {
 			this.loginForm.password = '';
 		}

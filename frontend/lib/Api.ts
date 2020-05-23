@@ -820,6 +820,51 @@ export class UsersClient {
         return Promise.resolve<User>(<any>null);
     }
 
+    postUser(user: UserRegisterRequest): Promise<UserResponse> {
+        let url_ = this.baseUrl + "/api/Users/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(user);
+
+        let options_ = <AxiosRequestConfig>{
+            validateStatus: () => true,
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processPostUser(_response);
+        });
+    }
+
+    protected processPostUser(response: AxiosResponse): Promise<UserResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = UserResponse.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<UserResponse>(<any>null);
+    }
+
     getUsers(): Promise<UserResponse[]> {
         let url_ = this.baseUrl + "/api/Users";
         url_ = url_.replace(/[?&]$/, "");
@@ -865,7 +910,7 @@ export class UsersClient {
         return Promise.resolve<UserResponse[]>(<any>null);
     }
 
-    postUser(user: UserRequest): Promise<UserResponse> {
+    postUser2(user: UserRequest): Promise<UserResponse> {
         let url_ = this.baseUrl + "/api/Users";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -883,11 +928,11 @@ export class UsersClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processPostUser(_response);
+            return this.processPostUser2(_response);
         });
     }
 
-    protected processPostUser(response: AxiosResponse): Promise<UserResponse> {
+    protected processPostUser2(response: AxiosResponse): Promise<UserResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -1101,7 +1146,7 @@ export class HotelResponse implements IHotelResponse {
             for (let item of this.rooms)
                 data["rooms"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1172,7 +1217,7 @@ export class Room implements IRoom {
             for (let item of this.reservations)
                 data["reservations"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1250,7 +1295,7 @@ export class Hotel implements IHotel {
             for (let item of this.rooms)
                 data["rooms"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1339,7 +1384,7 @@ export class User implements IUser {
             for (let item of this.hotels)
                 data["hotels"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1409,7 +1454,7 @@ export class Reservation implements IReservation {
         data["roomId"] = this.roomId !== undefined ? this.roomId : <any>null;
         data["user"] = this.user ? this.user.toJSON() : <any>null;
         data["userId"] = this.userId !== undefined ? this.userId : <any>null;
-        return data; 
+        return data;
     }
 }
 
@@ -1468,7 +1513,7 @@ export class HotelRequest implements IHotelRequest {
         data["email"] = this.email !== undefined ? this.email : <any>null;
         data["phone"] = this.phone !== undefined ? this.phone : <any>null;
         data["userId"] = this.userId !== undefined ? this.userId : <any>null;
-        return data; 
+        return data;
     }
 }
 
@@ -1512,7 +1557,7 @@ export class Login implements ILogin {
         data = typeof data === 'object' ? data : {};
         data["email"] = this.email !== undefined ? this.email : <any>null;
         data["password"] = this.password !== undefined ? this.password : <any>null;
-        return data; 
+        return data;
     }
 }
 
@@ -1578,7 +1623,7 @@ export class UserResponse implements IUserResponse {
             for (let item of this.reservations)
                 data["reservations"].push(item.toJSON());
         }
-        return data; 
+        return data;
     }
 }
 
@@ -1593,12 +1638,65 @@ export interface IUserResponse {
     reservations?: Reservation[] | null;
 }
 
+export class UserRegisterRequest implements IUserRegisterRequest {
+    name?: string | null;
+    surname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    password?: string | null;
+
+    constructor(data?: IUserRegisterRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.surname = _data["surname"] !== undefined ? _data["surname"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): UserRegisterRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserRegisterRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["surname"] = this.surname !== undefined ? this.surname : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
+export interface IUserRegisterRequest {
+    name?: string | null;
+    surname?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    password?: string | null;
+}
+
 export class UserRequest implements IUserRequest {
     id?: number;
     name?: string | null;
     surname?: string | null;
     email?: string | null;
     phone?: string | null;
+    password?: string | null;
     role?: string | null;
 
     constructor(data?: IUserRequest) {
@@ -1617,6 +1715,7 @@ export class UserRequest implements IUserRequest {
             this.surname = _data["surname"] !== undefined ? _data["surname"] : <any>null;
             this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
             this.phone = _data["phone"] !== undefined ? _data["phone"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
             this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
         }
     }
@@ -1635,8 +1734,9 @@ export class UserRequest implements IUserRequest {
         data["surname"] = this.surname !== undefined ? this.surname : <any>null;
         data["email"] = this.email !== undefined ? this.email : <any>null;
         data["phone"] = this.phone !== undefined ? this.phone : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
         data["role"] = this.role !== undefined ? this.role : <any>null;
-        return data; 
+        return data;
     }
 }
 
@@ -1646,6 +1746,7 @@ export interface IUserRequest {
     surname?: string | null;
     email?: string | null;
     phone?: string | null;
+    password?: string | null;
     role?: string | null;
 }
 
