@@ -26,7 +26,7 @@
 			<nuxt />
 		</main>
 		<footer></footer>
-		<b-modal id="login" v-model="loginModal" title="Login" @ok="login">
+		<b-modal id="login" title="Login" @ok="login">
 			<b-form @submit.prevent>
 				<b-form-group label="Email">
 					<b-form-input
@@ -38,7 +38,7 @@
 				<b-form-group label="Password">
 					<b-form-input
 						v-model="loginForm.password"
-						type="text"
+						type="password"
 						required
 					></b-form-input>
 				</b-form-group>
@@ -81,9 +81,12 @@ export default class Layout extends Vue {
 			await this.$store.dispatch('auth/login', this.loginForm);
 			this.loginError = '';
 			this.$bvModal.hide('login');
+			this.loginForm.email = '';
 		} catch (e) {
-			const response = JSON.parse(await e.response.text()).message;
+			const response = e.response.message;
 			this.loginError = response;
+		} finally {
+			this.loginForm.password = '';
 		}
 	}
 
