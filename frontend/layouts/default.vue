@@ -69,7 +69,7 @@
 				<b-form-group label="Email">
 					<b-form-input
 						v-model="registerForm.email"
-						type="text"
+						type="email"
 						required
 					></b-form-input>
 				</b-form-group>
@@ -77,7 +77,7 @@
 					<b-form-input
 						v-model="registerForm.phone"
 						required
-						type="text"
+						type="tel"
 					></b-form-input>
 				</b-form-group>
 				<b-form-group label="Password">
@@ -155,9 +155,14 @@ export default class Layout extends Vue {
 		}
 		try {
 			await this.$store.dispatch('auth/register', this.registerForm);
-			this.registerError = '';
 			this.$bvModal.hide('register');
+			const login = new Login({
+				email: this.registerForm.email ?? '',
+				password: this.registerForm.password ?? '',
+			});
+			this.registerError = '';
 			this.registerForm = new UserRegisterRequest();
+			this.$store.dispatch('auth/login', login);
 		} catch (e) {
 			const response = e.response.message;
 			this.registerError = response;

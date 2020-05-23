@@ -105,6 +105,9 @@ namespace HotelixApi.Controllers
 			userModel.Email = user.Email;
 			userModel.Phone = user.Phone;
 			userModel.Role = user.Role;
+			if (!string.IsNullOrEmpty(user.Password)) {
+				userModel.Password = user.Password;
+			}
 
 			_context.Entry(userModel).State = EntityState.Modified;
 

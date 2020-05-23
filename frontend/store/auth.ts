@@ -46,17 +46,9 @@ export const actions = {
 			throw e;
 		}
 	},
-	async register(
-		{ getters, dispatch }: ActionContext,
-		register: IUserRegisterRequest
-	) {
+	async register({ getters }: ActionContext, register: IUserRegisterRequest) {
 		const client = new UsersClient(undefined, getters['auth/axiosInstance']);
 		await client.postUser(new UserRegisterRequest(register));
-		const login = new Login({
-			email: register.email ?? '',
-			password: register.password ?? '',
-		});
-		await dispatch('login', login);
 	},
 	logout({ commit }: ActionContext) {
 		commit('setUser', null);

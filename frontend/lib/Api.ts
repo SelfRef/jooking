@@ -858,7 +858,7 @@ export class UsersClient {
             let resultData200  = _responseText;
             result200 = UserResponse.fromJS(resultData200);
             return result200;
-        } else if (status !== 200 && status !== 204) {
+        } else if (status !== 200 && status !== 204 && status !== 201) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }

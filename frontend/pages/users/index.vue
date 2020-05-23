@@ -105,8 +105,8 @@
 						required
 					></b-form-input>
 				</b-form-group>
-				<b-form-group label="Email">
-					<b-form-input v-model="user.phone" type="phone"></b-form-input>
+				<b-form-group label="Phone">
+					<b-form-input v-model="user.phone" type="tel"></b-form-input>
 				</b-form-group>
 				<b-form-group label="Role">
 					<b-form-select
@@ -114,6 +114,13 @@
 						:options="roles"
 						required
 					></b-form-select>
+				</b-form-group>
+				<b-form-group label="Password">
+					<b-form-input
+						v-model="user.password"
+						placeholder="Enter to change"
+						type="password"
+					></b-form-input>
 				</b-form-group>
 			</b-form>
 			<b-alert variant="danger" :show="showInvalid"
@@ -233,6 +240,7 @@ export default class Users extends Vue {
 			surname: '',
 			email: '',
 			phone: '',
+			password: '',
 			role: '',
 		});
 	}
@@ -285,6 +293,7 @@ export default class Users extends Vue {
 			this.user.name &&
 			this.user.surname &&
 			this.user.email &&
+			this.user.password &&
 			this.user.role
 		) {
 			if (this.user.id) {
