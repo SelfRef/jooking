@@ -37,6 +37,27 @@ namespace HotelixApi.Controllers
 			return user;
 		}
 
+		[AllowAnonymous]
+		[HttpPost("register")]
+		public async Task<ActionResult<UserResponse>> PostUser(UserRegisterRequest user)
+		{
+			var userModel = new User()
+			{
+				Id = 0,
+				Name = user.Name,
+				Surname = user.Surname,
+				Email = user.Email,
+				Phone = user.Phone,
+				Password = user.Password,
+				Role = Role.Guest,
+				Registered = DateTime.Now
+			};
+			_context.Users.Add(userModel);
+			await _context.SaveChangesAsync();
+
+			return CreatedAtAction("GetUser", new { id = userModel.Id }, UserResponse.FromUser(userModel));
+		}
+
 		// GET: api/Users
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
@@ -115,6 +136,7 @@ namespace HotelixApi.Controllers
 				Surname = user.Surname,
 				Email = user.Email,
 				Phone = user.Phone,
+				Password = user.Password,
 				Role = user.Role,
 				Registered = DateTime.Now
 			};
@@ -123,6 +145,7 @@ namespace HotelixApi.Controllers
 
 			return CreatedAtAction("GetUser", new { id = userModel.Id }, UserResponse.FromUser(userModel));
 		}
+
 
 		// DELETE: api/Users/5
 		[HttpDelete("{id}")]
