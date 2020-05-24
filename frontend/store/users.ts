@@ -23,17 +23,17 @@ export const mutations = {
 
 export const actions = {
 	async pullUsers(
-		{ commit, state, rootGetters }: ActionContext,
-		force: boolean
+		{ commit, _state, rootGetters }: ActionContext,
+		_force: boolean
 	) {
-		if (state.users === null || force) {
-			const client = new UsersClient(
-				undefined,
-				rootGetters['auth/axiosInstance']
-			);
-			const users = await client.getUsers();
-			commit('setUsers', users);
-		}
+		// if (state.users === null || force) {
+		const client = new UsersClient(
+			undefined,
+			rootGetters['auth/axiosInstance']
+		);
+		const users = await client.getUsers();
+		commit('setUsers', users);
+		// }
 	},
 	async pullUser({ rootGetters }: ActionContext, id: number) {
 		const client = new UsersClient(

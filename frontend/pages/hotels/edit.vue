@@ -379,7 +379,8 @@ export default class Users extends Vue {
 			if (this.room.id) {
 				await this.$store.dispatch('hotels/editRoom', this.room);
 			} else {
-				await this.$store.dispatch('rooms/createRoom', this.room);
+				this.room.hotelId = this.selectedHotel.id;
+				await this.$store.dispatch('hotels/createRoom', this.room);
 			}
 			this.showRoomInvalid = false;
 			if (this.selectedHotel) this.selectHotel(this.selectedHotel.id);

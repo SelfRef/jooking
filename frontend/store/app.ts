@@ -5,7 +5,7 @@ type State = {
 
 export const state = (): State => ({
 	name: 'Hotelix',
-	description: 'Room Reservation Service',
+	description: 'Jakies info o stronie',
 });
 
 export const mutations = {};

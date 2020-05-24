@@ -172,7 +172,7 @@ export default class Account extends Vue {
 		doc.fromHTML(this.generateTable(item), 15, 15, {
 			width: 200,
 		});
-		doc.save();
+		doc.save('potwierdzenie_rezerwacji.pdf');
 	}
 }
 </script>
