@@ -3,9 +3,18 @@
 ## Overview
 
 This project is a hotel booking platform to manage hotels, rooms and user reservations for specific days.
+Architecture used is client-server with communication via REST API.
 Backend application is an ASP.NET Core 3.1 API with configured InMemoryDatabase and seed data.
 Frondent application is a Nuxt.js (Vue.js) server running via Node.js SSR.
 Purpose of this repository is to prepare reference platform for further projects.
+
+## Features
+
+- Registration and login
+- Hotels Management: Add, change, remove
+- Hotel Rooms Management: Add, change, remove
+- Users Management: Add, change, remove
+- User Reservations Management: Create, remove
 
 ## Setup
 
