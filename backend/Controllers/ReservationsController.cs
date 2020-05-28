@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HotelixApi.Models;
+using JookingApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
-namespace HotelixApi.Controllers
+namespace JookingApi.Controllers
 {
 	[Authorize]
 	[Route("api/[controller]")]

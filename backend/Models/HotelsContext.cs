@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelixApi.Models {
+namespace JookingApi.Models {
 	public class HotelsContext: DbContext {
 		public DbSet<Hotel> Hotels { get; set; }
 		public DbSet<Room> Rooms { get; set; }

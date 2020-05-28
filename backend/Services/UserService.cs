@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using HotelixApi.Models;
+using JookingApi.Models;
 using System.Linq;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Security.Claims;
 using System;
 
-namespace HotelixApi.Services
+namespace JookingApi.Services
 {
 	public interface IUserService
 	{

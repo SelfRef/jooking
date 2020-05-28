@@ -13,17 +13,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-using HotelixApi.Models;
+using JookingApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
-using HotelixApi.Services;
+using JookingApi.Services;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.AspNetCore.Identity;
 
-namespace HotelixApi
+namespace JookingApi
 {
 	public class Startup
 	{

@@ -1,6 +1,9 @@
 <template>
 	<div :class="$style.container">
-		<b-jumbotron header="Hotelix" lead="Jakies info o stronie">
+		<b-jumbotron
+			:header="$store.state.app.name"
+			:lead="$store.state.app.description"
+		>
 			<b-button variant="primary" to="/hotels">Go to hotel list</b-button>
 		</b-jumbotron>
 	</div>
